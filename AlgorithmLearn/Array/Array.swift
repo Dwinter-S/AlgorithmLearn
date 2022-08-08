@@ -7,7 +7,7 @@
 
 import Foundation
 
-class Array {
+class ALArray {
     // MARK: - 两数之和
     /*
      给定一个整数数组 nums 和一个整数目标，返回两个数字的索引，使它们加起来等于目标。

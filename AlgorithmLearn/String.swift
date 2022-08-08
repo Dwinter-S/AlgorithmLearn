@@ -7,7 +7,7 @@
 
 import Foundation
 
-class AlString {
+class ALString {
     // MARK: - 520. 检测大写字母
     /*
      我们定义，在以下情况时，单词的大写用法是正确的：
@@ -480,4 +480,251 @@ class AlString {
         }
         return result == Int.max ? -1 : result
     }
+    
+    // MARK: - 389. 找不同
+    /*
+     给定两个字符串 s 和 t ，它们只包含小写字母。
+     字符串 t 由字符串 s 随机重排，然后在随机位置添加一个字母。
+     请找出在 t 中被添加的字母。
+     
+     示例 1：
+     输入：s = "abcd", t = "abcde"
+     输出："e"
+     解释：'e' 是那个被添加的字母。
+     
+     示例 2：
+     输入：s = "", t = "y"
+     输出："y"
+      
+     提示：
+     0 <= s.length <= 1000
+     t.length == s.length + 1
+     s 和 t 只包含小写字母
+     */
+    static func findTheDifference(_ s: String, _ t: String) -> Character {
+        // 计数
+        /*
+        var result: Character?
+        var countArr = [Int](repeating: 0, count: 26)
+        for c in s.map({ $0 }) {
+            let letterIndex = Int(c.asciiValue! - ("a" as Character).asciiValue!)
+            countArr[letterIndex] = countArr[letterIndex] + 1
+        }
+        for c in t.map({ $0 }) {
+            let letterIndex = Int(c.asciiValue! - ("a" as Character).asciiValue!)
+            if countArr[letterIndex] == 0 {
+                result = c
+                break
+            } else {
+                countArr[letterIndex] = countArr[letterIndex] - 1
+            }
+        }
+        return result!
+         */
+        // 位运算
+        var result: Int = 0
+        let tChars = Array(t)
+        let sChars = Array(s)
+        let tCharsCount = tChars.count
+        let sCharsCount = sChars.count
+        for i in 0..<tCharsCount {
+            let tCharAsciiValue = Int(tChars[i].asciiValue!)
+            result = result ^ tCharAsciiValue
+            if i < sCharsCount {
+                let sCharAsciiValue = Int(sChars[i].asciiValue!)
+                result = result ^ sCharAsciiValue
+            }
+        }
+        return Character(UnicodeScalar(result)!)
+    }
+    
+    // MARK: - 383. 赎金信
+    /*
+     给你两个字符串：ransomNote 和 magazine ，判断 ransomNote 能不能由 magazine 里面的字符构成。
+     如果可以，返回 true ；否则返回 false 。
+     magazine 中的每个字符只能在 ransomNote 中使用一次。
+     
+     示例 1：
+     输入：ransomNote = "a", magazine = "b"
+     输出：false
+     
+     示例 2：
+     输入：ransomNote = "aa", magazine = "ab"
+     输出：false
+     
+     示例 3：
+     输入：ransomNote = "aa", magazine = "aab"
+     输出：true
+     
+     提示：
+     1 <= ransomNote.length, magazine.length <= 105
+     ransomNote 和 magazine 由小写英文字母组成
+     */
+    static func canConstruct(_ ransomNote: String, _ magazine: String) -> Bool {
+        let ransomNoteChars = Array(ransomNote)
+        let magazineChars = Array(magazine)
+        var charCountMap = [Character : Int]()
+        for c in ransomNoteChars {
+            charCountMap[c] = (charCountMap[c] ?? 0) + 1
+        }
+        for c in magazineChars {
+            if let count = charCountMap[c], count > 0 {
+                charCountMap[c] = count - 1
+            }
+        }
+        return charCountMap.values.max() == 0
+    }
+    
+    // MARK: - 242.有效的字母异位词
+    /*
+     给定两个字符串 s 和 t ，编写一个函数来判断 t 是否是 s 的字母异位词。
+     注意：若 s 和 t 中每个字符出现的次数都相同，则称 s 和 t 互为字母异位词。
+     
+     示例 1:
+     输入: s = "anagram", t = "nagaram"
+     输出: true
+     
+     示例 2:
+     输入: s = "rat", t = "car"
+     输出: false
+     
+     提示:
+     1 <= s.length, t.length <= 5 * 104
+     s 和 t 仅包含小写字母
+
+     进阶: 如果输入字符串包含 unicode 字符怎么办？你能否调整你的解法来应对这种情况？
+     */
+    static func isAnagram(_ s: String, _ t: String) -> Bool {
+        guard s.count == t.count else { return false }
+        let sChars = Array(s)
+        let tChars = Array(t)
+        var charCountMap = [Character : Int]()
+        for c in sChars {
+            charCountMap[c] = (charCountMap[c] ?? 0) + 1
+        }
+        for c in tChars {
+            if let count = charCountMap[c] {
+                if count > 0 {
+                    charCountMap[c] = count - 1
+                } else {
+                    return false
+                }
+            } else {
+                return false
+            }
+        }
+        return true
+    }
+    
+    // MARK: - 49.字母异位词分组 (中等)
+    /*
+     给你一个字符串数组，请你将 字母异位词 组合在一起。可以按任意顺序返回结果列表。
+     字母异位词 是由重新排列源单词的字母得到的一个新单词，所有源单词中的字母通常恰好只用一次。
+
+     示例 1:
+     输入: strs = ["eat", "tea", "tan", "ate", "nat", "bat"]
+     输出: [["bat"],["nat","tan"],["ate","eat","tea"]]
+     
+     示例 2:
+     输入: strs = [""]
+     输出: [[""]]
+     
+     示例 3:
+     输入: strs = ["a"]
+     输出: [["a"]]
+     
+     提示：
+     1 <= strs.length <= 104
+     0 <= strs[i].length <= 100
+     strs[i] 仅包含小写字母
+     */
+    static func groupAnagrams(_ strs: [String]) -> [[String]] {
+        var dict = [String : [String]]()
+        for str in strs {
+            let sortedStr = String(str.sorted())
+            if var arr = dict[sortedStr] {
+                arr.append(str)
+                dict[sortedStr] = arr
+            } else {
+                dict[sortedStr] = [str]
+            }
+        }
+        return dict.values.map { $0 }
+    }
+    
+    // MARK: - 451.根据字符出现频率排序
+    /*
+     给定一个字符串 s ，根据字符出现的 频率 对其进行 降序排序 。一个字符出现的 频率 是它出现在字符串中的次数。
+     返回 已排序的字符串 。如果有多个答案，返回其中任何一个。
+
+     示例 1:
+     输入: s = "tree"
+     输出: "eert"
+     解释: 'e'出现两次，'r'和't'都只出现一次。
+     因此'e'必须出现在'r'和't'之前。此外，"eetr"也是一个有效的答案。
+     
+     示例 2:
+     输入: s = "cccaaa"
+     输出: "cccaaa"
+     解释: 'c'和'a'都出现三次。此外，"aaaccc"也是有效的答案。
+     注意"cacaca"是不正确的，因为相同的字母必须放在一起。
+     
+     示例 3:
+     输入: s = "Aabb"
+     输出: "bbAa"
+     解释: 此外，"bbaA"也是一个有效的答案，但"Aabb"是不正确的。
+     注意'A'和'a'被认为是两种不同的字符。
+      
+     提示:
+     1 <= s.length <= 5 * 105
+     s 由大小写英文字母和数字组成
+     */
+    static func frequencySort(_ s: String) -> String {
+        let chars = Array(s)
+        var countMap = [Character : Int]()
+        for c in chars {
+            countMap[c] = (countMap[c] ?? 0) + 1
+        }
+        let sortedStr = countMap.sorted(by: { $0.value > $1.value }).map { $0.key }
+        var result = [Character]()
+        for c in sortedStr {
+            let count: Int = countMap[c]!
+            for _ in 0..<count {
+                result.append(c)
+            }
+        }
+        return String(result)
+    }
+    
+    // MARK: - 423.从英文中重建数字 (中等)
+    /*
+     给你一个字符串 s ，其中包含字母顺序打乱的用英文单词表示的若干数字（0-9）。按 升序 返回原始的数字。
+     示例 1：
+     输入：s = "owoztneoer"
+     输出："012"
+     
+     示例 2：
+     输入：s = "fviefuro"
+     输出："45"
+     
+     提示：
+     1 <= s.length <= 105
+     s[i] 为 ["e","g","f","i","h","o","n","s","r","u","t","w","v","x","z"] 这些字符之一
+     s 保证是一个符合题目要求的字符串
+     */
+    static func originalDigits(_ s: String) -> String {
+        var result = ""
+        let englishNums = ["zero",
+                           "one",
+                           "two",
+                           "three",
+                           "four",
+                           "five",
+                           "six",
+                           "seven",
+                           "eight",
+                           "nine"]
+        return result
+    }
+    
 }

@@ -19,7 +19,7 @@ class ViewController: UIViewController {
 //        print(Array.mySqrt(24))
 //        print(Array.mySqrt(25))
 //        print(Array.mySqrt(26))
-        print(Array.checkPossibility([5, 7, 1, 8]))
+        print(ALString.frequencySort("tree"))
     }
 
 
