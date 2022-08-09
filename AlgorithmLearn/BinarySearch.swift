@@ -230,4 +230,162 @@ class BinarySearch {
         }
         return right
     }
+    
+    // MARK: - 34.在排序数组中查找元素的第一个和最后一个位置 (中等)
+    /*
+     给你一个按照非递减顺序排列的整数数组 nums，和一个目标值 target。请你找出给定目标值在数组中的开始位置和结束位置。
+     如果数组中不存在目标值 target，返回 [-1, -1]。
+     你必须设计并实现时间复杂度为 O(log n) 的算法解决此问题。
+     
+     示例 1：
+     输入：nums = [5,7,7,8,8,10], target = 8
+     输出：[3,4]
+     
+     示例 2：
+     输入：nums = [5,7,7,8,8,10], target = 6
+     输出：[-1,-1]
+     
+     示例 3：
+     输入：nums = [], target = 0
+     输出：[-1,-1]
+     
+     提示：
+     0 <= nums.length <= 105
+     -109 <= nums[i] <= 109
+     nums 是一个非递减数组
+     -109 <= target <= 109
+     */
+    static func searchRange(_ nums: [Int], _ target: Int) -> [Int] {
+        var left = 0
+        var right = nums.count - 1
+        while left <= right {
+            let mid = left + (right - left) / 2
+            if nums[mid] == target {
+                var start = mid
+                var end = mid
+                while start - 1 >= 0, nums[start - 1] == target {
+                    start -= 1
+                }
+                while end + 1 < nums.count, nums[end + 1] == target {
+                    end += 1
+                }
+                return [start, end]
+            } else if nums[mid] > target {
+                right = mid - 1
+            } else {
+                left = mid + 1
+            }
+        }
+        return [-1, -1]
+    }
+    
+    // MARK: - 540. 有序数组中的单一元素 (中等)
+    /*
+     给你一个仅由整数组成的有序数组，其中每个元素都会出现两次，唯有一个数只会出现一次。
+     请你找出并返回只出现一次的那个数。
+     你设计的解决方案必须满足 O(log n) 时间复杂度和 O(1) 空间复杂度。
+     
+     示例 1:
+     输入: nums = [1,1,2,3,3,4,4,8,8]
+     输出: 2
+     1,2,2,3,3
+     1,1,2,2,3
+     0,1, 2, 3,4
+     1, 3, 5, 7
+     示例 2:
+     输入: nums =  [3,3,7,7,10,11,11]
+     输出: 10
+     
+     提示:
+     1 <= nums.length <= 105
+     0 <= nums[i] <= 105
+     */
+    static func singleNonDuplicate(_ nums: [Int]) -> Int {
+        var left = 0
+        var right = nums.count - 1
+        while left <= right {
+            let mid = left + (right - left) / 2
+            if ((right - left) / 2) % 2 == 0 {
+                if mid > 1, nums[mid] == nums[mid - 1] {
+                    right = mid - 2
+                } else if mid < nums.count - 2, nums[mid] == nums[mid + 1]  {
+                    left = mid + 2
+                } else {
+                    return nums[mid]
+                }
+            } else {
+                if mid > 0, nums[mid] == nums[mid - 1] {
+                    left = mid + 1
+                } else if mid < nums.count - 1, nums[mid] == nums[mid + 1]  {
+                    right = mid - 1
+                } else {
+                    return nums[mid]
+                }
+            }
+        }
+        return 0
+    }
+    
+    // MARK: - 275.H 指数 II（中等）
+    /*
+     给你一个整数数组 citations ，其中 citations[i] 表示研究者的第 i 篇论文被引用的次数，citations 已经按照 升序排列 。计算并返回该研究者的 h 指数。
+     h 指数的定义：h 代表“高引用次数”（high citations），一名科研人员的 h 指数是指他（她）的 （n 篇论文中）总共有 h 篇论文分别被引用了至少 h 次。且其余的 n - h 篇论文每篇被引用次数 不超过 h 次。
+     
+     提示：如果 h 有多种可能的值，h 指数 是其中最大的那个。
+     请你设计并实现对数时间复杂度的算法解决此问题。
+     
+     示例 1：
+     输入：citations = [0,1,3,5,6]
+     输出：3
+     解释：给定数组表示研究者总共有 5 篇论文，每篇论文相应的被引用了 0, 1, 3, 5, 6 次。
+          由于研究者有 3 篇论文每篇 至少 被引用了 3 次，其余两篇论文每篇被引用 不多于 3 次，所以她的 h 指数是 3 。
+     
+     示例 2：
+     输入：citations = [1,2,100]
+     输出：2
+     */
+    static func hIndex(_ citations: [Int]) -> Int {
+        let count = citations.count
+        var left = 0
+        var right = count - 1
+        while left <= right {
+            let mid = left + (right - left) / 2
+            if citations[mid] == count - mid {
+                return citations[mid]
+            } else if citations[mid] < count - mid {
+                left = mid + 1
+            } else {
+                right = mid - 1
+            }
+        }
+        return count - left
+    }
+    // MARK: - 436. 寻找右区间（中等）
+    /*
+     给你一个区间数组 intervals ，其中 intervals[i] = [starti, endi] ，且每个 starti 都 不同 。
+     区间 i 的 右侧区间 可以记作区间 j ，并满足 startj >= endi ，且 startj 最小化 。
+     返回一个由每个区间 i 的 右侧区间 在 intervals 中对应下标组成的数组。如果某个区间 i 不存在对应的 右侧区间 ，则下标 i 处的值设为 -1 。
+     
+     示例 1：
+     输入：intervals = [[1,2]]
+     输出：[-1]
+     解释：集合中只有一个区间，所以输出-1。
+     
+     示例 2：
+     输入：intervals = [[3,4],[2,3],[1,2]]
+     输出：[-1,0,1]
+     解释：对于 [3,4] ，没有满足条件的“右侧”区间。
+     对于 [2,3] ，区间[3,4]具有最小的“右”起点;
+     对于 [1,2] ，区间[2,3]具有最小的“右”起点。
+     
+     示例 3：
+     输入：intervals = [[1,4],[2,3],[3,4]]
+     输出：[-1,2,-1]
+     解释：对于区间 [1,4] 和 [3,4] ，没有满足条件的“右侧”区间。
+     对于 [2,3] ，区间 [3,4] 有最小的“右”起点。
+     */
+    static func findRightInterval(_ intervals: [[Int]]) -> [Int] {
+        
+    }
+    
 }
