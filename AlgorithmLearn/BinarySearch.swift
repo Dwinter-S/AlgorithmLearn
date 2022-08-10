@@ -385,7 +385,49 @@ class BinarySearch {
      对于 [2,3] ，区间 [3,4] 有最小的“右”起点。
      */
     static func findRightInterval(_ intervals: [[Int]]) -> [Int] {
+        // 暴力解法
+        /*
+        var result = [Int]()
+        for i in 0..<intervals.count {
+            let rangeI = intervals[i]
+            var minIndex = -1
+            var minStartValue = Int.max
+            for j in 0..<intervals.count {
+                let rangeJ = intervals[j]
+                if rangeJ[0] >= rangeI[1], rangeJ[0] < minStartValue {
+                    minIndex = j
+                    minStartValue = rangeJ[0]
+                }
+            }
+            result.append(minIndex)
+        }
+        return result
+         */
         
+        // 二分法
+        var startIntervals = [[Int]]()
+        for (index, interval) in intervals.enumerated() {
+            startIntervals.append([interval[0], index])
+        }
+        startIntervals = startIntervals.sorted(by: { a, b in
+            return a[0] < b[0]
+        })
+        print(startIntervals)
+        var result = [Int]()
+        for interval in intervals {
+            var left = 0
+            var right = startIntervals.count - 1
+            while left <= right {
+                let mid = left + (right - left) / 2
+                if startIntervals[mid][0] >= interval[1] {
+                    right = mid - 1
+                } else if startIntervals[mid][0] < interval[1] {
+                    left = mid + 1
+                }
+            }
+            result.append(left < startIntervals.count ? startIntervals[left][1] : -1)
+        }
+        return result
     }
     
 }

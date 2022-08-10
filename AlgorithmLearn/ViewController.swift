@@ -11,15 +11,7 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        let list1 = ListNode(1)
-        list1.next = ListNode(2)
-        let list2 = ListNode(1)
-        list2.next = ListNode(3)
-//        print(Array.mySqrt(10))
-//        print(Array.mySqrt(24))
-//        print(Array.mySqrt(25))
-//        print(Array.mySqrt(26))
-        print(ALString.frequencySort("tree"))
+        print(TwoPointers.threeSumClosest([1, 1, 1, 0], -100))
     }
 
 
