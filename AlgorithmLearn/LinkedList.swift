@@ -349,17 +349,6 @@ class LinkedList {
      输出：[3,2,1,4,5]
      */
     static func reverseKGroup(_ head: ListNode?, _ k: Int) -> ListNode? {
-        if head == nil { return head }
-        var cur = head
-        for _ in 0..<k {
-            if cur == nil {
-                return head
-            }
-            cur = cur?.next
-        }
-        let newHead = reverseFromHead(head, k: k)
-        head?.next = reverseKGroup(cur, k)
-        return newHead
         func reverseFromHead(_ head: ListNode?, k: Int) -> ListNode? {
             var pre: ListNode?
             var cur = head
@@ -373,6 +362,17 @@ class LinkedList {
             }
             return pre
         }
+        if head == nil { return head }
+        var cur = head
+        for _ in 0..<k {
+            if cur == nil {
+                return head
+            }
+            cur = cur?.next
+        }
+        let newHead = reverseFromHead(head, k: k)
+        head?.next = reverseKGroup(cur, k)
+        return newHead
     }
     
     // MARK: - 2. 两数相加（中等）
