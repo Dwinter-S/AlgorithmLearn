@@ -369,6 +369,322 @@ class Math {
      1 <= num < 231
      */
     static func findComplement(_ num: Int) -> Int {
+        var highbit = 0
+        for i in 1..<31 {
+            if num >= (1 << i) {
+                highbit = i
+            } else {
+                break
+            }
+        }
+        let mask = highbit == 30 ? 0x7fffffff : (1 << (highbit + 1) - 1)
+        return num ^ mask
+    }
+    
+    // MARK: - 461. 汉明距离
+    /*
+     两个整数之间的 汉明距离 指的是这两个数字对应二进制位不同的位置的数目。
+     给你两个整数 x 和 y，计算并返回它们之间的汉明距离。
+     
+     示例 1：
+     输入：x = 1, y = 4
+     输出：2
+     
+     解释：
+     1   (0 0 0 1)
+     4   (0 1 0 0)
+            ↑   ↑
+     上面的箭头指出了对应二进制位不同的位置。
+     
+     示例 2：
+     输入：x = 3, y = 1
+     输出：1
+     
+     提示：
+     0 <= x, y <= 231 - 1
+     */
+    static func hammingDistance(_ x: Int, _ y: Int) -> Int {
+        let z = x ^ y
+        var res = 0
+        for i in 0..<31 {
+            if (z >> i) & 1 == 1 {
+                res += 1
+            }
+        }
+        return res
+    }
+    
+    // MARK: - 477. 汉明距离总和（中等）
+    /*
+     两个整数的 汉明距离 指的是这两个数字的二进制数对应位不同的数量。
+     给你一个整数数组 nums，请你计算并返回 nums 中任意两个数之间 汉明距离的总和 。
+     
+     示例 1：
+     输入：nums = [4,14,2]
+     输出：6
+     解释：在二进制表示中，4 表示为 0100 ，14 表示为 1110 ，2表示为 0010 。（这样表示是为了体现后四位之间关系）
+     所以答案为：
+     HammingDistance(4, 14) + HammingDistance(4, 2) + HammingDistance(14, 2) = 2 + 2 + 2 = 6
+     
+     示例 2：
+     输入：nums = [4,14,4]
+     输出：4
+      
+     提示：
+     1 <= nums.length <= 104
+     0 <= nums[i] <= 109
+     给定输入的对应答案符合 32-bit 整数范围
+     */
+    static func totalHammingDistance(_ nums: [Int]) -> Int {
+        var res = 0
+        let count = nums.count
+        for i in 0..<30 {
+            var c = 0
+            for num in nums {
+                c += (num >> i) & 1
+            }
+            res += c * (count - c)
+        }
+        return res
+    }
+    
+    // MARK: - 693. 交替位二进制数
+    /*
+     给定一个正整数，检查它的二进制表示是否总是 0、1 交替出现：换句话说，就是二进制表示中相邻两位的数字永不相同。
+     
+     示例 1：
+     输入：n = 5
+     输出：true
+     解释：5 的二进制表示是：101
+     
+     示例 2：
+     输入：n = 7
+     输出：false
+     解释：7 的二进制表示是：111.
+     
+     示例 3：
+     输入：n = 11
+     输出：false
+     解释：11 的二进制表示是：1011.
+     */
+    static func hasAlternatingBits(_ n: Int) -> Bool {
+        // 除以2判断余数是否相等
+        /*
+        var n = n
+        var pre = 2
+        while n > 0 {
+            if n % 2 == pre {
+                return false
+            }
+            pre = n % 2
+            n /= 2
+        }
+        return true
+         */
         
+        // 位运算
+        let a = n ^ (n >> 1)
+        return a & (a + 1) == 0
+    }
+    
+    // MARK: 393. UTF-8 编码验证（中等）
+    /*
+     给定一个表示数据的整数数组 data ，返回它是否为有效的 UTF-8 编码。
+     UTF-8 中的一个字符可能的长度为 1 到 4 字节，遵循以下的规则：
+     对于 1 字节 的字符，字节的第一位设为 0 ，后面 7 位为这个符号的 unicode 码。
+     对于 n 字节 的字符 (n > 1)，第一个字节的前 n 位都设为1，第 n+1 位设为 0 ，后面字节的前两位一律设为 10 。剩下的没有提及的二进制位，全部为这个符号的 unicode 码。
+     这是 UTF-8 编码的工作方式：
+           Number of Bytes  |        UTF-8 octet sequence
+                            |              (binary)
+        --------------------+---------------------------------------------
+                 1          | 0xxxxxxx
+                 2          | 110xxxxx 10xxxxxx
+                 3          | 1110xxxx 10xxxxxx 10xxxxxx
+                 4          | 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
+     x 表示二进制形式的一位，可以是 0 或 1。
+
+     注意：输入是整数数组。只有每个整数的 最低 8 个有效位 用来存储数据。这意味着每个整数只表示 1 字节的数据。
+
+     示例 1：
+     输入：data = [197,130,1]
+     输出：true
+     解释：数据表示字节序列:11000101 10000010 00000001。
+     这是有效的 utf-8 编码，为一个 2 字节字符，跟着一个 1 字节字符。
+     
+     11111000
+     10000010
+     
+     示例 2：
+     输入：data = [235,140,4]
+     输出：false
+     解释：数据表示 8 位的序列: 11101011 10001100 00000100.
+     前 3 位都是 1 ，第 4 位为 0 表示它是一个 3 字节字符。
+     下一个字节是开头为 10 的延续字节，这是正确的。
+     但第二个延续字节不以 10 开头，所以是不符合规则的。
+     
+     提示:
+     1 <= data.length <= 2 * 104
+     0 <= data[i] <= 255
+     */
+    static func validUtf8(_ data: [Int]) -> Bool {
+        func getByteCount(_ num: Int) -> Int? {
+            var mask = 1 << 7
+            if num < mask { return 1 }
+            var n = 0
+            while (num & mask) != 0 {
+                n += 1
+                if n > 4 {
+                    return nil
+                }
+                mask = mask >> 1
+            }
+            return n >= 2 ? n : -1
+        }
+        var i = 0
+        let count = data.count
+        let mask = (1 << 7) | (1 << 6)
+        while i < count {
+            guard let byteCount = getByteCount(data[i]) else {
+                return false
+            }
+            guard i + byteCount <= count else {
+                return false
+            }
+            for j in i+1..<i+byteCount {
+                if (data[j] & mask) != (1 << 7) {
+                    return false
+                }
+            }
+            i += byteCount
+        }
+        return true
+    }
+    
+    // MARK: - 172. 阶乘后的零（中等）
+    /*
+     给定一个整数 n ，返回 n! 结果中尾随零的数量。
+     提示 n! = n * (n - 1) * (n - 2) * ... * 3 * 2 * 1
+     
+     示例 1：
+     输入：n = 3
+     输出：0
+     解释：3! = 6 ，不含尾随 0
+     
+     示例 2：
+     输入：n = 5
+     输出：1
+     解释：5! = 120 ，有一个尾随 0
+     
+     示例 3：
+     输入：n = 0
+     输出：0
+      
+     提示：
+     0 <= n <= 104
+      
+     进阶：你可以设计并实现对数时间复杂度的算法来解决此问题吗？
+     */
+    static func trailingZeroes(_ n: Int) -> Int {
+        var n = n
+        var res = 0
+        while n > 0 {
+            res += n / 5
+            n /= 5
+        }
+        return res
+    }
+    
+    // MARK: - 458. 可怜的小猪
+    /*
+     有 buckets 桶液体，其中 正好有一桶 含有毒药，其余装的都是水。它们从外观看起来都一样。为了弄清楚哪只水桶含有毒药，你可以喂一些猪喝，通过观察猪是否会死进行判断。不幸的是，你只有 minutesToTest 分钟时间来确定哪桶液体是有毒的。
+     喂猪的规则如下：
+     选择若干活猪进行喂养
+     可以允许小猪同时饮用任意数量的桶中的水，并且该过程不需要时间。
+     小猪喝完水后，必须有 minutesToDie 分钟的冷却时间。在这段时间里，你只能观察，而不允许继续喂猪。
+     过了 minutesToDie 分钟后，所有喝到毒药的猪都会死去，其他所有猪都会活下来。
+     重复这一过程，直到时间用完。
+     给你桶的数目 buckets ，minutesToDie 和 minutesToTest ，返回 在规定时间内判断哪个桶有毒所需的 最小 猪数 。
+     
+     示例 1：
+     输入：buckets = 1000, minutesToDie = 15, minutesToTest = 60
+     输出：5
+     
+     示例 2：
+     输入：buckets = 4, minutesToDie = 15, minutesToTest = 15
+     输出：2
+     
+     示例 3：
+     输入：buckets = 4, minutesToDie = 15, minutesToTest = 30
+     输出：2
+
+     提示：
+     1 <= buckets <= 1000
+     1 <= minutesToDie <= minutesToTest <= 100
+     */
+    static func poorPigs(_ buckets: Int, _ minutesToDie: Int, _ minutesToTest: Int) -> Int {
+        let states = minutesToTest / minutesToDie + 1
+        return Int(ceil(log2(Double(buckets)) / log2(Double(states))))
+    }
+    
+    // MARK: - 258.各位相加
+    static func addDigits(_ num: Int) -> Int {
+        // 循环
+        /*
+        var n = num
+        while n >= 10 {
+            var sum = 0
+            while n > 0 {
+                sum += n % 10
+                n /= 10
+            }
+            n = sum
+        }
+        return n
+         */
+        
+        // 数学
+        return (num - 1) % 9 + 1
+    }
+    
+    // MARK: - 319.灯泡开关
+    static func bulbSwitch(_ n: Int) -> Int {
+        return Int(sqrt(Double(n) + 0.5))
+    }
+    
+    // MARK: - 405.数字转换为十六进制数
+    /*
+     给定一个整数，编写一个算法将这个数转换为十六进制数。对于负整数，我们通常使用 补码运算 方法。
+     注意:
+     十六进制中所有字母(a-f)都必须是小写。
+     十六进制字符串中不能包含多余的前导零。如果要转化的数为0，那么以单个字符'0'来表示；对于其他情况，十六进制字符串中的第一个字符将不会是0字符。
+     给定的数确保在32位有符号整数范围内。
+     不能使用任何由库提供的将数字直接转换或格式化为十六进制的方法。
+     
+     示例 1：
+     输入:
+     26
+     输出:
+     "1a"
+     
+     示例 2：
+     输入:
+     -1
+     输出:
+     "ffffffff"
+     */
+    static func toHex(_ num: Int) -> String {
+        return ""
+    }
+    
+    // MARK: - 171. Excel 表列序号
+    static func titleToNumber(_ columnTitle: String) -> Int {
+        let chars = Array(columnTitle)
+        let count = chars.count
+        var res = 0
+        for i in 0..<count {
+            let num = chars[i].asciiValue! - ("A" as Character).asciiValue! + 1
+            res += Int(num) * Int(powf(26, Float(count - i - 1)))
+        }
+        return res
     }
 }
