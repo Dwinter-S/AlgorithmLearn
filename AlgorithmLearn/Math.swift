@@ -687,4 +687,154 @@ class Math {
         }
         return res
     }
+    
+    // MARK: - 168. Excel表列名称
+    /*
+     给你一个整数 columnNumber ，返回它在 Excel 表中相对应的列名称。
+     例如：
+
+     A -> 1
+     B -> 2
+     C -> 3
+     ...
+     Z -> 26
+     AA -> 27
+     AB -> 28
+     ...
+     
+     示例 1：
+     输入：columnNumber = 1
+     输出："A"
+     
+     示例 2：
+     输入：columnNumber = 28
+     输出："AB"
+     
+     示例 3：
+     输入：columnNumber = 701
+     输出："ZY"
+     
+     示例 4：
+     输入：columnNumber = 2147483647
+     输出："FXSHRXW"
+      
+     提示：
+     1 <= columnNumber <= 231 - 1
+     */
+    static func convertToTitle(_ columnNumber: Int) -> String {
+        var n = columnNumber
+        var res = [Character]()
+        while n > 0 {
+            let num = (n - 1) % 26
+            let aValue = Int(("A" as Character).asciiValue!)
+            let numChar = Character(UnicodeScalar(aValue + num)!)
+            res.insert(numChar, at: 0)
+            n = (n - 1) / 26
+        }
+        return String(res)
+    }
+    
+    // MARK: - 670. 最大交换（中等）
+    /*
+     给定一个非负整数，你至多可以交换一次数字中的任意两位。返回你能得到的最大值。
+     示例 1 :
+     输入: 2736
+     输出: 7236
+     解释: 交换数字2和数字7。
+     
+     示例 2 :
+     输入: 9973
+     输出: 9973
+     解释: 不需要交换。
+     注意:
+
+     给定数字的范围是 [0, 108]
+     */
+    static func maximumSwap(_ num: Int) -> Int {
+        var chars = Array("\(num)")
+        var i = 0
+        while i < chars.count {
+            let num = Int(String(chars[i]))!
+            var j = i + 1
+            var maxNum = num
+            var swapIndex = i
+            while j < chars.count {
+                let thisNum = Int(String(chars[j]))!
+                if thisNum >= maxNum {
+                    maxNum = thisNum
+                    swapIndex = j
+                }
+                j += 1
+            }
+            if swapIndex != i && maxNum != num {
+                (chars[i], chars[swapIndex]) = (chars[swapIndex], chars[i])
+                return Int(String(chars))!
+            }
+            i += 1
+        }
+        return num
+    }
+    
+    // MARK: - 233. 数字 1 的个数（困难）
+    /*
+     给定一个整数 n，计算所有小于等于 n 的非负整数中数字 1 出现的个数。
+     
+     示例 1：
+     输入：n = 13
+     输出：6
+     
+     示例 2：
+     输入：n = 0
+     输出：0
+     
+     提示：
+     0 <= n <= 109
+     */
+    static func countDigitOne(_ n: Int) -> Int {
+        
+        return 0
+    }
+    
+    // MARK: - 357. 统计各位数字都不同的数字个数
+    /*
+     给你一个整数 n ，统计并返回各位数字都不同的数字 x 的个数，其中 0 <= x < 10n 。
+     示例 1：
+     输入：n = 2
+     输出：91
+     解释：答案应为除去 11、22、33、44、55、66、77、88、99 外，在 0 ≤ x < 100 范围内的所有数字。
+     
+     示例 2：
+     输入：n = 0
+     输出：1
+     
+     提示：
+     0 <= n <= 8
+     */
+    static func countNumbersWithUniqueDigits(_ n: Int) -> Int {
+        if n == 0 { return 1 }
+        if n == 1 { return 10 }
+        var res = 10
+        var cur = 9
+        for i in 0..<n-1 {
+            cur *= 9 - i
+            res += cur
+        }
+        return res
+    }
+    
+    // MARK: - 400. 第 N 位数字
+    /*
+     给你一个整数 n ，请你在无限的整数序列 [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, ...] 中找出并返回第 n 位上的数字。
+     示例 1：
+     输入：n = 3
+     输出：3
+     
+     示例 2：
+     输入：n = 11
+     输出：0
+     解释：第 11 位数字在序列 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, ... 里是 0 ，它是 10 的一部分。
+     */
+    static func findNthDigit(_ n: Int) -> Int {
+        return 0
+    }
 }
