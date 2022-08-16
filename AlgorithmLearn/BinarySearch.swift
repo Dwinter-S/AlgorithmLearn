@@ -430,4 +430,154 @@ class BinarySearch {
         return result
     }
     
+    // MARK: - 300. 最长递增子序列（中等）
+    /*
+     给你一个整数数组 nums ，找到其中最长严格递增子序列的长度。
+     子序列 是由数组派生而来的序列，删除（或不删除）数组中的元素而不改变其余元素的顺序。例如，[3,6,2,7] 是数组 [0,3,1,6,2,2,7] 的子序列。
+
+     示例 1：
+     输入：nums = [10,9,2,5,3,7,101,18]
+     输出：4
+     解释：最长递增子序列是 [2,3,7,101]，因此长度为 4 。
+     
+     示例 2：
+     输入：nums = [0,1,0,3,2,3]
+     输出：4
+     
+     示例 3：
+     输入：nums = [7,7,7,7,7,7,7]
+     输出：1
+     */
+    static func lengthOfLIS(_ nums: [Int]) -> Int {
+        // 动态规划
+        let n = nums.count
+        if n == 0 { return 0 }
+        // dp[i]代表以下标i结尾的最长递增子序列，初始化为1
+        var dp = [Int](repeating: 1, count: n)
+        var maxLength = 1
+        // 从第二个元素开始
+        for i in 1..<n {
+            // 从下标0开始遍历小于下标i的元素
+            for j in 0..<i {
+                // 如果当前元素小于下标i位置的元素
+                if nums[j] < nums[i]  {
+                    // 以下标i结尾的最长递增子序列长度为：以下标j结尾的最长递增子序列长度+1，和之前的dp[i]比较取最大值
+                    dp[i] = max(dp[i], dp[j] + 1)
+                }
+            }
+            maxLength = max(maxLength, dp[i])
+        }
+        return maxLength
+    }
+    
+    // MARK: - 354. 俄罗斯套娃信封问题（困难）
+    /*
+     给你一个二维整数数组 envelopes ，其中 envelopes[i] = [wi, hi] ，表示第 i 个信封的宽度和高度。
+     当另一个信封的宽度和高度都比这个信封大的时候，这个信封就可以放进另一个信封里，如同俄罗斯套娃一样。
+     请计算 最多能有多少个 信封能组成一组“俄罗斯套娃”信封（即可以把一个信封放到另一个信封里面）。
+     注意：不允许旋转信封。
+     
+     示例 1：
+     输入：envelopes = [[5,4],[6,4],[6,7],[2,3]]
+     输出：3
+     解释：最多信封的个数为 3, 组合为: [2,3] => [5,4] => [6,7]。
+     
+     示例 2：
+     输入：envelopes = [[1,1],[1,1],[1,1]]
+     输出：1
+     */
+    static func maxEnvelopes(_ envelopes: [[Int]]) -> Int {
+        return 0
+    }
+    
+    // MARK: - 658. 找到 K 个最接近的元素（中等）
+    /*
+     给定一个 排序好 的数组 arr ，两个整数 k 和 x ，从数组中找到最靠近 x（两数之差最小）的 k 个数。返回的结果必须要是按升序排好的。
+     整数 a 比整数 b 更接近 x 需要满足：
+     |a - x| < |b - x| 或者
+     |a - x| == |b - x| 且 a < b
+     
+     示例 1：
+     输入：arr = [1,2,3,4,5], k = 4, x = 3
+     输出：[1,2,3,4]
+     
+     示例 2：
+     输入：arr = [1,2,3,4,5], k = 4, x = -1
+     输出：[1,2,3,4]
+     */
+    static func findClosestElements(_ arr: [Int], _ k: Int, _ x: Int) -> [Int] {
+        var left = 0
+        var right = arr.count - k
+        while left < right {
+            let mid = left + (right - left) / 2
+            if x - arr[mid] > arr[mid + k] - x {
+                left = mid + 1
+            } else {
+                right = mid
+            }
+        }
+        return Array(arr[left..<left+k])
+    }
+    
+    // MARK: - 162. 寻找峰值（中等）
+    /*
+     峰值元素是指其值严格大于左右相邻值的元素。
+     给你一个整数数组 nums，找到峰值元素并返回其索引。数组可能包含多个峰值，在这种情况下，返回 任何一个峰值 所在位置即可。
+     你可以假设 nums[-1] = nums[n] = -∞ 。
+     你必须实现时间复杂度为 O(log n) 的算法来解决此问题。
+     
+     示例 1：
+     输入：nums = [1,2,3,1]
+     输出：2
+     解释：3 是峰值元素，你的函数应该返回其索引 2。
+     
+     示例 2：
+     输入：nums = [1,2,1,3,5,6,4]
+     输出：1 或 5
+     解释：你的函数可以返回索引 1，其峰值元素为 2；
+          或者返回索引 5， 其峰值元素为 6。
+      
+     提示：
+     1 <= nums.length <= 1000
+     */
+    static func findPeakElement(_ nums: [Int]) -> Int {
+        var left = 0
+        var right = nums.count - 1
+        while left < right {
+            let mid = left + (right - left) / 2
+            if nums[mid] < nums[mid + 1] {
+                left = mid + 1
+            } else {
+                right = mid
+            }
+        }
+        return left
+    }
+    
+    // MARK: - 4. 寻找两个正序数组的中位数（困难）
+    /*
+     给定两个大小分别为 m 和 n 的正序（从小到大）数组 nums1 和 nums2。请你找出并返回这两个正序数组的 中位数 。
+     算法的时间复杂度应该为 O(log (m+n)) 。
+     
+     示例 1：
+     输入：nums1 = [1,3], nums2 = [2]
+     输出：2.00000
+     解释：合并数组 = [1,2,3] ，中位数 2
+     
+     示例 2：
+     输入：nums1 = [1,2], nums2 = [3,4]
+     输出：2.50000
+     解释：合并数组 = [1,2,3,4] ，中位数 (2 + 3) / 2 = 2.5
+     
+     提示：
+     nums1.length == m
+     nums2.length == n
+     0 <= m <= 1000
+     0 <= n <= 1000
+     1 <= m + n <= 2000
+     -106 <= nums1[i], nums2[i] <= 106
+     */
+    static func findMedianSortedArrays(_ nums1: [Int], _ nums2: [Int]) -> Double {
+        return 0
+    }
 }

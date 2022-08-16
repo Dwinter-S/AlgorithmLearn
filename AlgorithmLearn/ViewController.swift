@@ -16,7 +16,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         let node = ListNode(arr: [1,2,3,4,5])
         
-        print(Math.maximumSwap(98368))
+        print(BinarySearch.findClosestElements([1,2,3,4,5], 4, 3))
         
 //        let item = AVPlayerItem(url: URL(string: "https://static.ieltsbro.com/uploads/app_oral_practice_comment/audio_record/1660272310666.mp3")!)
     

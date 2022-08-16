@@ -795,7 +795,7 @@ class Math {
         return 0
     }
     
-    // MARK: - 357. 统计各位数字都不同的数字个数
+    // MARK: - 357. 统计各位数字都不同的数字个数（中等）
     /*
      给你一个整数 n ，统计并返回各位数字都不同的数字 x 的个数，其中 0 <= x < 10n 。
      示例 1：
@@ -836,5 +836,189 @@ class Math {
      */
     static func findNthDigit(_ n: Int) -> Int {
         return 0
+    }
+    
+    // MARK: - 492. 构造矩形
+    /*
+     作为一位web开发者， 懂得怎样去规划一个页面的尺寸是很重要的。 所以，现给定一个具体的矩形页面面积，你的任务是设计一个长度为 L 和宽度为 W 且满足以下要求的矩形的页面。要求：
+     你设计的矩形页面必须等于给定的目标面积。
+     宽度 W 不应大于长度 L ，换言之，要求 L >= W 。
+     长度 L 和宽度 W 之间的差距应当尽可能小。
+     返回一个 数组 [L, W]，其中 L 和 W 是你按照顺序设计的网页的长度和宽度。
+      
+     示例1：
+     输入: 4
+     输出: [2, 2]
+     解释: 目标面积是 4， 所有可能的构造方案有 [1,4], [2,2], [4,1]。
+     但是根据要求2，[1,4] 不符合要求; 根据要求3，[2,2] 比 [4,1] 更能符合要求. 所以输出长度 L 为 2， 宽度 W 为 2。
+     
+     示例 2:
+     输入: area = 37
+     输出: [37,1]
+     
+     示例 3:
+     输入: area = 122122
+     输出: [427,286]
+     */
+    static func constructRectangle(_ area: Int) -> [Int] {
+        var w = Int(sqrt(Double(area)))
+        while area % w != 0, w > 1 {
+            w -= 1
+        }
+        return [area / w, w]
+    }
+    
+    // MARK: - 29. 两数相除（中等）
+    /*
+     给定两个整数，被除数 dividend 和除数 divisor。将两数相除，要求不使用乘法、除法和 mod 运算符。
+     返回被除数 dividend 除以除数 divisor 得到的商。
+     整数除法的结果应当截去（truncate）其小数部分，例如：truncate(8.345) = 8 以及 truncate(-2.7335) = -2
+
+     示例 1:
+     输入: dividend = 10, divisor = 3
+     输出: 3
+     解释: 10/3 = truncate(3.33333..) = truncate(3) = 3
+     
+     示例 2:
+     输入: dividend = 7, divisor = -3
+     输出: -2
+     解释: 7/-3 = truncate(-2.33333..) = -2
+     
+     提示：
+     被除数和除数均为 32 位有符号整数。
+     除数不为 0。
+     假设我们的环境只能存储 32 位有符号整数，其数值范围是 [−231,  231 − 1]。本题中，如果除法结果溢出，则返回 231 − 1。
+     */
+    static func divide(_ dividend: Int, _ divisor: Int) -> Int {
+        if divisor == 0 || (dividend == -Int(INT32_MAX) - 1 && divisor == -1) {
+                    return Int(INT32_MAX)
+                }
+        let isPositive = (dividend > 0 && divisor > 0) || (dividend < 0 && divisor < 0)
+        let dividend = abs(dividend)
+        let divisor = abs(divisor)
+        if dividend < divisor { return 0 }
+        var cur = divisor
+        var res = 1
+        while dividend >= (cur << 1) {
+            cur = cur << 1
+            res = res << 1
+        }
+        while dividend >= cur + divisor {
+            cur += divisor
+            res += 1
+        }
+        return isPositive ? res : -res
+    }
+    
+    // MARK: - 507. 完美数
+    /*
+     对于一个 正整数，如果它和除了它自身以外的所有 正因子 之和相等，我们称它为 「完美数」。
+     给定一个 整数 n， 如果是完美数，返回 true；否则返回 false。
+
+     示例 1：
+     输入：num = 28
+     输出：true
+     解释：28 = 1 + 2 + 4 + 7 + 14
+     1, 2, 4, 7, 和 14 是 28 的所有正因子。
+     
+     示例 2：
+     输入：num = 7
+     输出：false
+     */
+    static func checkPerfectNumber(_ num: Int) -> Bool {
+        var sum = 0
+        var cur = 1
+        while num / cur >= cur {
+            if num % cur == 0 {
+                if cur == 1 || num / cur == cur {
+                    sum += cur
+                } else {
+                    sum += cur
+                    sum += num / cur
+                }
+            }
+            cur += 1
+        }
+        return sum == num
+    }
+    
+    // MARK: - 50. Pow(x, n)
+    /*
+     实现 pow(x, n) ，即计算 x 的整数 n 次幂函数（即，xn ）。
+     
+     示例 1：
+     输入：x = 2.00000, n = 10
+     输出：1024.00000
+     
+     示例 2：
+     输入：x = 2.10000, n = 3
+     输出：9.26100
+     
+     示例 3：
+     输入：x = 2.00000, n = -2
+     输出：0.25000
+     解释：2-2 = 1/22 = 1/4 = 0.25
+     
+     提示：
+
+     -100.0 < x < 100.0
+     -231 <= n <= 231-1
+     -104 <= xn <= 104
+     */
+    static func myPow(_ x: Double, _ n: Int) -> Double {
+        /*
+        if n == 0 { return 1 }
+        if x == 0 { return 0 }
+        var cur = abs(x)
+        let m = abs(n)
+        var res = 1
+        while res * 2 <= m {
+            cur *= cur
+            res *= 2
+        }
+        while res + 1 <= m {
+            cur *= abs(x)
+            res += 1
+        }
+        let value = n < 0 ? 1 / cur : cur
+        if x < 0 {
+            return (n % 2) == 1 ? -value : value
+        } else {
+            return value
+        }
+         */
+        
+        func quickMul(_ x: Double, _ n: Int) -> Double {
+            if n == 0 {
+                return 1
+            }
+            let y = quickMul(x, n / 2)
+            return n % 2 == 0 ? y * y : y * y * x
+        }
+        return n >= 0 ? quickMul(x, n) : 1 / quickMul(x, -n)
+    }
+    
+    // MARK: - 372. 超级次方（中等）
+    /*
+     你的任务是计算 ab 对 1337 取模，a 是一个正整数，b 是一个非常大的正整数且会以数组形式给出。
+     
+     示例 1：
+     输入：a = 2, b = [3]
+     输出：8
+     
+     示例 2：
+     输入：a = 2, b = [1,0]
+     输出：1024
+     
+     示例 3：
+     输入：a = 1, b = [4,3,3,8,5,2]
+     输出：1
+     
+     示例 4：
+     输入：a = 2147483647, b = [2,0,0]
+     输出：1198
+     */
+    static func superPow(_ a: Int, _ b: [Int]) -> Int {
+        return 1
     }
 }
