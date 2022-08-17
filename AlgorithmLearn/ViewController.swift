@@ -24,6 +24,7 @@ class ViewController: UIViewController {
 //        let item = AVPlayerItem(url: URL(string: "https://static.ieltsbro.com/uploads/app_oral_practice_comment/audio_record/1660271548144.mp3")!)
     
         let item = AVPlayerItem(url: URL(string: "https://static.ieltsbro.com/uploads/app_oral_practice_comment/audio_record/1660271474257.mp3")!)
+    
         item.addObserver(self, forKeyPath: #keyPath(AVPlayerItem.status), options: [.old, .new], context: nil)
         item.addObserver(self, forKeyPath: #keyPath(AVPlayerItem.duration), options: .new, context: nil)
         player.replaceCurrentItem(with: item)

@@ -257,6 +257,6 @@ class TwoPointers {
      输出：[[2,2,2,2]]
      */
     static func fourSum(_ nums: [Int], _ target: Int) -> [[Int]] {
-        
+        return []
     }
 }
