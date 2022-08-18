@@ -16,8 +16,10 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         let node = ListNode(arr: [1,2,3,4,5])
         
-        print(BinarySearch.findClosestElements([1,2,3,4,5], 4, 3))
-        
+//        print(BinarySearch.findClosestElements([1,2,3,4,5], 4, 3))
+        let root = TreeNode(arr: [0,0,0,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil,nil,0,0,nil])
+//        let root = TreeNode(arr: [1,3,2,5,3,nil,9])
+        print(Tree.findSecondMinimumValue(TreeNode(arr: [1,1,3,1,1,3,4,3,1,1,1,3,8,4,8,3,3,1,6,2,1])))
 //        let item = AVPlayerItem(url: URL(string: "https://static.ieltsbro.com/uploads/app_oral_practice_comment/audio_record/1660272310666.mp3")!)
     
         

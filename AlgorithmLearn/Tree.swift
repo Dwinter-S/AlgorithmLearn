@@ -18,6 +18,49 @@ public class TreeNode {
         self.left = left
         self.right = right
     }
+    
+    func getTree(arr: [Int?]) -> [[Int?]] {
+        var nodes = [[Int?]]()
+        var cur = 0
+        var depth = 0
+        let count = arr.count
+        while cur < count {
+            let maxCount = 1 << depth
+            let addCount = count - cur > maxCount ? maxCount : count - cur
+            nodes.append(Array(arr[cur..<cur + addCount]))
+            depth += 1
+            cur += addCount
+        }
+        return nodes
+    }
+    
+    init(arr: [Int?]) {
+        let node = TreeNode.getTreeNode(arr: arr, index: 0)
+        self.val = node?.val ?? 0
+        self.left = node?.left
+        self.right = node?.right
+    }
+    
+    static func getTreeNode(arr: [Int?], index: Int) -> TreeNode? {
+        func element(at index: Int, arr: [Int?]) -> Int? {
+            if index < arr.count {
+                return arr[index]
+            }
+            return nil
+        }
+        if let val = element(at: index, arr: arr) {
+            let node = TreeNode(val)
+            if let _ = element(at: index * 2 + 1, arr: arr) {
+                node.left = getTreeNode(arr: arr, index: index * 2 + 1)
+            }
+            if let _ = element(at: index * 2 + 2, arr: arr) {
+                node.right = getTreeNode(arr: arr, index: index * 2 + 2)
+            }
+            return node
+        }
+        return nil
+    }
+    
 }
 
 public class Node {
@@ -428,6 +471,54 @@ class Tree {
     
     // MARK: - 662. 二叉树最大宽度（中等）
     static func widthOfBinaryTree(_ root: TreeNode?) -> Int {
-       return 0
+        guard let root = root else { return 0 }
+        var ans: Int = 0
+        var queue = [TreeNode]()
+        queue.append(root)
+        root.val = 0
+        while !queue.isEmpty {
+            let count = queue.count
+            let width = queue.last!.val - queue.first!.val + 1
+            for _ in 0..<count {
+                let cur = queue.removeFirst()
+                if let left = cur.left {
+                    queue.append(left)
+                    cur.left?.val = cur.val * 2 + 1
+                }
+                if let right = cur.right {
+                    queue.append(right)
+                    cur.right?.val = cur.val * 2 + 2
+                }
+            }
+            ans = max(ans, width)
+        }
+        return ans
+    }
+    
+    // MARK: - 671. 二叉树中第二小的节点
+    static func findSecondMinimumValue(_ root: TreeNode?) -> Int {
+        guard let root = root else { return -1 }
+        var queue: [TreeNode] = [root]
+        let minValue = root.val
+        var secondMinValue = Int.max
+        while !queue.isEmpty {
+            var curQueue = [TreeNode]()
+            for node in queue {
+                if let left = node.left {
+                    curQueue.append(left)
+                }
+                if let right = node.right {
+                    curQueue.append(right)
+                }
+                if node.val > minValue {
+                    secondMinValue = min(secondMinValue, node.val)
+                }
+            }
+            queue = curQueue
+        }
+        if secondMinValue != Int.max {
+            return secondMinValue
+        }
+        return -1
     }
 }
