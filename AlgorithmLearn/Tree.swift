@@ -617,9 +617,248 @@ class Tree {
         return ans
     }
     
-    // MARK: - 107. 二叉树的层序遍历 II
+    // MARK: - 107. 二叉树的层序遍历 II（中等）
     static func levelOrderBottom(_ root: TreeNode?) -> [[Int]] {
+        guard let root = root else { return [] }
+        var ans = [[Int]]()
+        var queue: [TreeNode] = [root]
+        while !queue.isEmpty {
+            var lineNodes = [TreeNode]()
+            var lineValues = [Int]()
+            for node in queue {
+                if let left = node.left {
+                    lineNodes.append(left)
+                }
+                if let right = node.right {
+                    lineNodes.append(right)
+                }
+                lineValues.append(node.val)
+            }
+            ans.insert(lineValues, at: 0)
+            queue = lineNodes
+        }
+        return ans
+    }
+    
+    // MARK: 257. 二叉树的所有路径
+    static func binaryTreePaths(_ root: TreeNode?) -> [String] {
+        var ans = [String]()
+        func generateBinaryTreePaths(_ root: TreeNode?, paths: String) {
+            guard let root = root else { return }
+            var newPaths = ""
+            if paths.isEmpty {
+                newPaths = "\(root.val)"
+            } else {
+                newPaths = "\(paths)->\(root.val)"
+            }
+            if root.left == nil && root.right == nil {
+                ans.append(newPaths)
+            }
+            generateBinaryTreePaths(root.left, paths: newPaths)
+            generateBinaryTreePaths(root.right, paths: newPaths)
+        }
         
+        generateBinaryTreePaths(root, paths: "")
+        return ans
+    }
+    
+    // MARK: - 623. 在二叉树中增加一行
+    static func addOneRow(_ root: TreeNode?, _ val: Int, _ depth: Int) -> TreeNode? {
+        if depth == 1 {
+            let newRoot = TreeNode(val)
+            newRoot.left = root
+            return newRoot
+        }
+        var queue: [TreeNode] = [root!]
+        var curDepth = 1
+        while !queue.isEmpty {
+            var curLineNodes = [TreeNode]()
+            for node in queue {
+                if curDepth == depth - 1 {
+                    // 到了第depth-1层，每一个节点都添加左右子节点，如果原节点有左右子节点，则拼接到新添加的节点后面
+                    let newLeft = TreeNode(val)
+                    if let left = node.left {
+                        newLeft.left = left
+                    }
+                    node.left = newLeft
+                    let newRight = TreeNode(val)
+                    if let right = node.right {
+                        newRight.right = right
+                    }
+                    node.right = newRight
+                } else {
+                    if let left = node.left {
+                        curLineNodes.append(left)
+                    }
+                    if let right = node.right {
+                        curLineNodes.append(right)
+                    }
+                }
+            }
+            curDepth += 1
+            if curDepth == depth {
+                break
+            }
+            queue = curLineNodes
+        }
+        return root
+    }
+    
+    // MARK: - 653. 两数之和 IV - 输入 BST
+    static func findTarget(_ root: TreeNode?, _ k: Int) -> Bool {
+        var arr = [Int]()
+        func inorderTraversal(_ root: TreeNode?) {
+            guard let root = root else { return }
+            inorderTraversal(root.left)
+            arr.append(root.val)
+            inorderTraversal(root.right)
+        }
+        inorderTraversal(root)
+        var left = 0
+        var right = arr.count - 1
+        while left < right {
+            if arr[left] + arr[right] < k {
+                left += 1
+            } else if arr[left] + arr[right] > k {
+                right -= 1
+            } else {
+                return true
+            }
+        }
+        return false
+    }
+    
+    
+    // MARK: - 104. 二叉树的最大深度
+    static func maxDepth(_ root: TreeNode?) -> Int {
+        if root == nil { return 0 }
+        let leftDepth = maxDepth(root?.left)
+        let rightDepth = maxDepth(root?.right)
+        return max(leftDepth, rightDepth) + 1
+    }
+    
+    // MARK: - 111. 二叉树的最小深度
+    static func minDepth(_ root: TreeNode?) -> Int {
+        if root == nil { return 0 }
+        let leftDepth = minDepth(root?.left)
+        let rightDepth = minDepth(root?.right)
+        if leftDepth == 0 {
+            return rightDepth + 1
+        }
+        if rightDepth == 0 {
+            return leftDepth + 1
+        }
+        return min(leftDepth, rightDepth) + 1
+    }
+    
+    // MARK: - 112. 路径总和
+    static func hasPathSum(_ root: TreeNode?, _ targetSum: Int) -> Bool {
+        guard let root = root else { return false }
+        if root.left == nil && root.right == nil && root.val == targetSum {
+            return true
+        }
+        return hasPathSum(root.left, targetSum - root.val) || hasPathSum(root.right, targetSum - root.val)
+    }
+    
+    // MARK: - 113. 路径总和 II
+    static func pathSum(_ root: TreeNode?, _ targetSum: Int) -> [[Int]] {
+        var ans = [[Int]]()
+        func dfs(_ root: TreeNode?,  _ targetSum: Int, arr: [Int]) {
+            guard let root = root else { return }
+            var arr = arr
+            arr.append(root.val)
+            if root.left == nil && root.right == nil && root.val == targetSum {
+                ans.append(arr)
+                return
+            }
+            dfs(root.left, targetSum - root.val, arr: arr)
+            dfs(root.right, targetSum - root.val, arr: arr)
+        }
+        dfs(root, targetSum, arr: [])
+        return ans
+    }
+    
+    // MARK: - 129. 求根节点到叶节点数字之和（中等）
+    static func sumNumbers(_ root: TreeNode?) -> Int {
+        var sum = 0
+        func dfs(_ root: TreeNode?, curSum: Int) {
+            guard let root = root else { return }
+            var curSum = curSum
+            curSum += root.val
+            if root.left == nil && root.right == nil {
+                sum += curSum
+                return
+            }
+            dfs(root.left, curSum: curSum * 10)
+            dfs(root.right, curSum: curSum * 10)
+        }
+        dfs(root, curSum: 0)
+        return sum
+    }
+    
+    // MARK: - 404. 左叶子之和
+    static func sumOfLeftLeaves(_ root: TreeNode?) -> Int {
+        var sum = 0
+        func traversal(_ root: TreeNode?, isLeft: Bool) {
+            guard let root = root else { return }
+            if isLeft, root.left == nil, root.right == nil {
+                sum += root.val
+            }
+            traversal(root.left, isLeft: true)
+            traversal(root.right, isLeft: false)
+        }
+        traversal(root, isLeft: false)
+        return sum
+    }
+    
+    // MARK: - 199. 二叉树的右视图（中等）
+    static func rightSideView(_ root: TreeNode?) -> [Int] {
+        guard let root = root else { return [] }
+        var ans = [Int]()
+        var queue: [TreeNode] = [root]
+        while !queue.isEmpty {
+            ans.append(queue.last!.val)
+            var nextLineNodes = [TreeNode]()
+            for node in queue {
+                if let left = node.left {
+                    nextLineNodes.append(left)
+                }
+                if let right = node.right {
+                    nextLineNodes.append(right)
+                }
+            }
+            queue = nextLineNodes
+        }
+        return ans
+    }
+    
+    // MARK: - 655. 输出二叉树（中等）
+    static func printTree(_ root: TreeNode?) -> [[String]] {
+        guard let root = root else { return [] }
+        func maxDepth(_ root: TreeNode?) -> Int {
+            if root == nil { return 0 }
+            let leftDepth = maxDepth(root?.left)
+            let rightDepth = maxDepth(root?.right)
+            return max(leftDepth, rightDepth) + 1
+        }
+        let row = maxDepth(root)
+        let column = (1 << row) - 1
+        
+        var ans = [[String]](repeating: [String](repeating: "", count: column), count: row)
+        var queue: [TreeNode] = [root]
+        while !queue.isEmpty {
+            var nextLineNodes = [TreeNode]()
+            for node in queue {
+                if let left = node.left {
+                    nextLineNodes.append(left)
+                }
+                if let right = node.right {
+                    nextLineNodes.append(right)
+                }
+            }
+            queue = nextLineNodes
+        }
+        return ans
     }
     
 }
