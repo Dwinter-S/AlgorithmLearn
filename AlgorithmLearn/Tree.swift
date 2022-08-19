@@ -280,10 +280,6 @@ class Tree {
     }
     // MARK: - 572. 另一棵树的子树
     static func isSubtree(_ root: TreeNode?, _ subRoot: TreeNode?) -> Bool {
-        if root == nil { return false }
-        let isRootSub = isSubtreeFromRoot(root, subRoot)
-        return isRootSub || isSubtree(root?.left, subRoot) || isSubtree(root?.right, subRoot)
-        
         func isSubtreeFromRoot(_ root: TreeNode?, _ subRoot: TreeNode?) -> Bool {
             if root == nil && subRoot == nil { return true }
             if (subRoot == nil && root != nil) || (root == nil && subRoot != nil) { return false }
@@ -291,6 +287,9 @@ class Tree {
             let isRightSame = isSubtreeFromRoot(root?.right, subRoot?.right)
             return isLeftSame && isRightSame && root?.val == subRoot?.val
         }
+        if root == nil { return false }
+        let isRootSub = isSubtreeFromRoot(root, subRoot)
+        return isRootSub || isSubtree(root?.left, subRoot) || isSubtree(root?.right, subRoot)
     }
     
     // MARK: - 543. 二叉树的直径
@@ -521,4 +520,106 @@ class Tree {
         }
         return -1
     }
+    
+    // MARK: - 513. 找树左下角的值
+    static func findBottomLeftValue(_ root: TreeNode?) -> Int {
+        var queue: [TreeNode] = [root!]
+        while !queue.isEmpty {
+            var lineNodes = [TreeNode]()
+            for node in queue {
+                if let left = node.left {
+                    lineNodes.append(left)
+                }
+                if let right = node.right {
+                    lineNodes.append(right)
+                }
+            }
+            if lineNodes.isEmpty {
+                return queue.first!.val
+            }
+            queue = lineNodes
+        }
+        return 0
+    }
+    
+    // MARK: - 515. 在每个树行中找最大值
+    static func largestValues(_ root: TreeNode?) -> [Int] {
+        guard let root = root else { return [] }
+        var ans = [Int]()
+        var queue: [TreeNode] = [root]
+        
+        while !queue.isEmpty {
+            var lineNodes = [TreeNode]()
+            var curLineMax = Int.min
+            for node in queue {
+                if let left = node.left {
+                    lineNodes.append(left)
+                }
+                if let right = node.right {
+                    lineNodes.append(right)
+                }
+                curLineMax = max(curLineMax, node.val)
+            }
+            ans.append(curLineMax)
+            queue = lineNodes
+        }
+        return ans
+    }
+    
+    // MARK: - 637. 二叉树的层平均值
+    static func averageOfLevels(_ root: TreeNode?) -> [Double] {
+        var ans = [Double]()
+        var queue: [TreeNode] = [root!]
+        while !queue.isEmpty {
+            var lineNodes = [TreeNode]()
+            var curLineSum = 0
+            for node in queue {
+                if let left = node.left {
+                    lineNodes.append(left)
+                }
+                if let right = node.right {
+                    lineNodes.append(right)
+                }
+                curLineSum += node.val
+            }
+            ans.append(Double(curLineSum) / Double(queue.count))
+            queue = lineNodes
+        }
+        return ans
+    }
+    
+    // MARK: - 103. 二叉树的锯齿形层序遍历（中等）
+    static func zigzagLevelOrder(_ root: TreeNode?) -> [[Int]] {
+        guard let root = root else { return [] }
+        var ans = [[Int]]()
+        var queue: [TreeNode] = [root]
+        var isFromLeftToRight = false
+        while !queue.isEmpty {
+            isFromLeftToRight = !isFromLeftToRight
+            var lineNodes = [TreeNode]()
+            var lineValues = [Int]()
+            for node in queue {
+                if let left = node.left {
+                    lineNodes.append(left)
+                }
+                if let right = node.right {
+                    lineNodes.append(right)
+                }
+                if isFromLeftToRight {
+                    lineValues.append(node.val)
+                } else {
+                    lineValues.insert(node.val, at: 0)
+                }
+            }
+            ans.append(lineValues)
+            queue = lineNodes
+        }
+        return ans
+    }
+    
+    // MARK: - 107. 二叉树的层序遍历 II
+    static func levelOrderBottom(_ root: TreeNode?) -> [[Int]] {
+        
+    }
+    
 }
