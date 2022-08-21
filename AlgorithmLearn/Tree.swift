@@ -831,7 +831,6 @@ class Tree {
         }
         return ans
     }
-    
     // MARK: - 655. 输出二叉树（中等）
     static func printTree(_ root: TreeNode?) -> [[String]] {
         guard let root = root else { return [] }
@@ -843,22 +842,251 @@ class Tree {
         }
         let row = maxDepth(root)
         let column = (1 << row) - 1
-        
         var ans = [[String]](repeating: [String](repeating: "", count: column), count: row)
-        var queue: [TreeNode] = [root]
+        var queue: [(TreeNode, Int)] = [(root, column / 2)]
+        var curRow = 0
         while !queue.isEmpty {
-            var nextLineNodes = [TreeNode]()
+            var nextLineNodes = [(TreeNode, Int)]()
             for node in queue {
-                if let left = node.left {
-                    nextLineNodes.append(left)
+                var diff = row - curRow - 2
+                diff = 1 << diff
+                if let left = node.0.left {
+                    nextLineNodes.append((left, node.1 - diff))
                 }
-                if let right = node.right {
-                    nextLineNodes.append(right)
+                if let right = node.0.right {
+                    nextLineNodes.append((right, node.1 + diff))
                 }
+                ans[curRow][node.1] = "\(node.0.val)"
             }
             queue = nextLineNodes
+            curRow += 1
         }
         return ans
     }
     
+    // MARK: - 116. 填充每个节点的下一个右侧节点指针
+    public class NodeWithNext {
+        public var val: Int
+        public var left: NodeWithNext?
+        public var right: NodeWithNext?
+        public var next: NodeWithNext?
+        public init(_ val: Int) {
+            self.val = val
+            self.left = nil
+            self.right = nil
+            self.next = nil
+        }
+    }
+    static func connect(_ root: NodeWithNext?) -> NodeWithNext? {
+        if root == nil { return root }
+        var cur = root
+        while cur?.left != nil {
+            var head = cur
+            while head != nil {
+                head?.left?.next = head?.right
+                head?.right?.next = head?.next?.left
+                head = head?.next
+            }
+            cur = cur?.left
+        }
+        return root
+    }
+    
+    // MARK: - 117. 填充每个节点的下一个右侧节点指针 II
+    static func connect2(_ root: NodeWithNext?) -> NodeWithNext? {
+        if root == nil { return root }
+        var cur = root
+        while cur != nil {
+            var head = cur
+            let dummy = NodeWithNext(0)
+            var pre: NodeWithNext? = dummy
+            while head != nil {
+                if let left = head?.left {
+                    pre?.next = left
+                    pre = pre?.next
+                }
+                if let right = head?.right {
+                    pre?.next = right
+                    pre = pre?.next
+                }
+                head = head?.next
+            }
+            cur = dummy.next
+        }
+        return root
+    }
+    
+    // MARK: - 144. 二叉树的前序遍历
+    static func preorderTraversal(_ root: TreeNode?) -> [Int] {
+        // 递归
+        /*
+        var ans = [Int]()
+        func traversal(_ root: TreeNode?) {
+            guard let root = root else { return }
+            ans.append(root.val)
+            traversal(root.left)
+            traversal(root.right)
+        }
+        traversal(root)
+        return ans
+        */
+        
+        // 迭代
+        guard let root = root else { return [] }
+        var stack = [TreeNode]()
+        stack.append(root)
+        var ans = [Int]()
+        while !stack.isEmpty {
+            let cur = stack.removeLast()
+            ans.append(cur.val)
+            if let right = cur.right {
+                stack.append(right)
+            }
+            if let left = cur.left {
+                stack.append(left)
+            }
+        }
+        return ans
+    }
+    
+    // MAKR: - 589. N 叉树的前序遍历
+    static func preorder(_ root: Node?) -> [Int] {
+        // 递归
+        /*
+        var ans = [Int]()
+        func traversal(_ root: Node?) {
+            guard let root = root else { return }
+            ans.append(root.val)
+            for child in root.children {
+                traversal(child)
+            }
+        }
+        traversal(root)
+        return ans
+         */
+        
+        // 迭代
+        guard let root = root else { return [] }
+        var stack = [Node]()
+        stack.append(root)
+        var ans = [Int]()
+        while !stack.isEmpty {
+            let cur = stack.removeLast()
+            ans.append(cur.val)
+            for child in cur.children.reversed() {
+                stack.append(child)
+            }
+        }
+        return ans
+    }
+    
+    // MARK: - 606. 根据二叉树创建字符串
+    static func tree2str(_ root: TreeNode?) -> String {
+        guard let root = root else { return "" }
+        if root.left == nil && root.right == nil {
+            return "\(root.val)"
+        }
+        if root.right == nil {
+            return "\(root.val)(\(tree2str(root.left)))"
+        }
+        return "\(root.val)(\(tree2str(root.left)))(\(tree2str(root.right)))"
+    }
+    
+    // MARK: - 331. 验证二叉树的前序序列化
+    static func isValidSerialization(_ preorder: String) -> Bool {
+        let arr = preorder.components(separatedBy: ",")
+        // 代表栈中元素之和的计数器
+        var slots = 1
+        for i in 0..<arr.count {
+            if slots == 0 {
+                return false
+            }
+            if arr[i] == "#" {
+                slots -= 1
+            } else {
+                slots += 1
+            }
+        }
+        return slots == 0
+    }
+    
+    // MAKR: - 652. 寻找重复的子树
+    static func findDuplicateSubtrees(_ root: TreeNode?) -> [TreeNode?] {
+        var ans = [TreeNode?]()
+        var map = [String: Int]()
+        @discardableResult
+        func lookup(_ node: TreeNode?) -> String {
+            guard let node = node else { return "#" }
+            let s = "\(node.val),\(lookup(node.left)),\(lookup(node.right))"
+            if map[s] == 1 {
+                ans.append(node)
+            }
+            map[s] = (map[s] ?? 0) + 1
+            return s
+        }
+        lookup(root)
+        return ans
+    }
+
+    // MARK: - 297. 二叉树的序列化与反序列化（困难）
+    static func serialize(_ root: TreeNode?) -> String {
+        func toStr(_ node: TreeNode?, str: String) -> String {
+            guard let node = node else { return str + "null," }
+            var str = str
+            str += "\(node.val),"
+            str = toStr(node.left, str: str)
+            str = toStr(node.right, str: str)
+            return str
+        }
+        return toStr(root, str: "")
+    }
+    
+    static func deserialize(_ data: String) -> TreeNode? {
+        func toTree(_ data: inout [String]) -> TreeNode? {
+            guard data.count > 0 else { return nil }
+            if data.first == "null" {
+                data.removeFirst()
+                return nil
+            }
+            let root = TreeNode(Int(data.first!)!)
+            data.removeFirst()
+            root.left = toTree(&data)
+            root.right = toTree(&data)
+            return root
+        }
+        var dataArray = data.components(separatedBy: ",")
+        return toTree(&dataArray)
+    }
+    
+    // MARK: - 145. 二叉树的后序遍历
+    static func postorderTraversal(_ root: TreeNode?) -> [Int] {
+        // 递归
+        /*
+        func postorder(_ node: TreeNode?, res: inout [Int]) {
+            guard let node = node else { return }
+            postorder(node.left, res: &res)
+            postorder(node.right, res: &res)
+            res.append(node.val)
+        }
+        var ans = [Int]()
+        postorder(root, res: &ans)
+        return ans
+         */
+        // 迭代
+        guard let root = root else { return [] }
+        var ans = [Int]()
+        var stack = [TreeNode]()
+        stack.append(root)
+        while !stack.isEmpty {
+            let node = stack.removeLast()
+            ans.append(node.val)
+            if let left = node.left {
+                stack.append(left)
+            }
+            if let right = node.right {
+                stack.append(right)
+            }
+        }
+        return ans.reversed()
+    }
 }
