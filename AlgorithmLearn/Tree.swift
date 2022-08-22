@@ -1089,4 +1089,174 @@ class Tree {
         }
         return ans.reversed()
     }
+    
+    // MARK: - 145. 二叉树的后序遍历
+    static func postorder(_ root: Node?) -> [Int] {
+        func postorder(_ node: Node?, res: inout [Int]) {
+            guard let node = node else { return }
+            for child in node.children {
+                postorder(child, res: &res)
+            }
+            res.append(node.val)
+        }
+        var ans = [Int]()
+        postorder(root, res: &ans)
+        return ans
+    }
+    
+    // MARK: - 94. 二叉树的中序遍历
+    static func inorderTraversal(_ root: TreeNode?) -> [Int] {
+        // 递归
+        /*
+        func traversal(_ root: TreeNode?, res: inout [Int]) {
+            guard let root = root else { return }
+            traversal(root.left, res: &res)
+            res.append(root.val)
+            traversal(root.right, res: &res)
+        }
+        var ans = [Int]()
+        traversal(root, res: &ans)
+        return ans
+         */
+        // 迭代
+        guard let root = root else { return [] }
+        var ans = [Int]()
+        var stack = [TreeNode]()
+        var cur: TreeNode? = root
+        while cur != nil || !stack.isEmpty {
+            if cur != nil {
+                stack.append(cur!)
+                cur = cur?.left
+            } else {
+                let node = stack.removeLast()
+                ans.append(node.val)
+                cur = node.right
+            }
+        }
+        return ans
+    }
+    
+    // MARK: - 700. 二叉搜索树中的搜索
+    static func searchBST(_ root: TreeNode?, _ val: Int) -> TreeNode? {
+        // 递归
+        /*
+        guard let root = root else { return nil }
+        if root.val < val {
+            return searchBST(root.right, val)
+        } else if root.val > val {
+            return searchBST(root.left, val)
+        }
+        return root
+         */
+        
+        // 迭代
+        guard let root = root else { return nil }
+        var cur: TreeNode? = root
+        while cur != nil {
+            if cur!.val > val {
+                cur = cur?.left
+            } else if cur!.val < val {
+                cur = cur?.right
+            } else {
+                return cur
+            }
+        }
+        return nil
+    }
+    
+    // MARK: - 530. 二叉搜索树的最小绝对差
+    static func getMinimumDifference(_ root: TreeNode?) -> Int {
+        var ans = Int.max
+        var pre: Int?
+        func traversal(_ node: TreeNode?) {
+            guard let node = node else { return }
+            traversal(node.left)
+            if pre != nil {
+                ans = min(ans, node.val - pre!)
+            }
+            pre = node.val
+            traversal(node.right)
+        }
+        traversal(root)
+        return ans
+    }
+    
+    // MARK: - 538. 把二叉搜索树转换为累加树（中等）
+    static func convertBST(_ root: TreeNode?) -> TreeNode? {
+        /*
+        var sum = 0
+        func convert(_ root: TreeNode?) {
+            if root != nil {
+                convert(root?.right)
+                sum += root!.val
+                convert(root?.left)
+            }
+        }
+        convert(root)
+        return root
+         */
+        func dfs(_ root: TreeNode?, parentVal: Int) -> Int {
+            guard let root = root else { return parentVal }
+            root.val += dfs(root.right, parentVal: parentVal)
+            return dfs(root.left, parentVal: root.val)
+        }
+        dfs(root, parentVal: 0)
+        return root
+    }
+    
+    // MARK: - 230. 二叉搜索树中第K小的元素（中等）
+    static func kthSmallest(_ root: TreeNode?, _ k: Int) -> Int {
+        guard let root = root else { return 0 }
+        var stack = [root]
+        var cur: TreeNode? = root
+        var k = k
+        while cur != nil || !stack.isEmpty {
+            if cur != nil {
+                stack.append(cur!)
+                cur = cur?.left
+            } else {
+                let node = stack.removeLast()
+                k -= 1
+                if k == 0 {
+                    return node.val
+                }
+                cur = node.right
+            }
+        }
+        return root.val
+    }
+    
+    // MARK: - 98. 验证二叉搜索树
+    static func isValidBST(_ root: TreeNode?) -> Bool {
+        func isValidBST(_ root: TreeNode?, min: Int?, max: Int?) -> Bool {
+            guard let root = root else { return true }
+            if let min = min, root.val <= min { return false }
+            if let max = max, root.val >= max { return false }
+            return isValidBST(root.left, min: min, max: root.val) && isValidBST(root.right, min: root.val, max: max)
+        }
+        return isValidBST(root, min: nil, max: nil)
+    }
+    
+    // MARK: - 173. 二叉搜索树迭代器
+    /*
+    class Intearal {
+        init(_ root: TreeNode?) {
+            
+        }
+        
+        func next() -> Int {
+            
+        }
+        
+        func hasNext() -> Bool {
+            
+        }
+    }
+     */
+    
+    // MARK: - 669. 修剪二叉搜索树
+    static func trimBST(_ root: TreeNode?, _ low: Int, _ high: Int) -> TreeNode? {
+        guard let root = root else { return nil }
+        if root.val
+    }
 }
