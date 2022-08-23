@@ -1257,6 +1257,160 @@ class Tree {
     // MARK: - 669. 修剪二叉搜索树
     static func trimBST(_ root: TreeNode?, _ low: Int, _ high: Int) -> TreeNode? {
         guard let root = root else { return nil }
-        if root.val
+        let trimLeft = trimBST(root.left, low, high)
+        let trimRight = trimBST(root.right, low, high)
+        if root.val > high {
+            return trimLeft
+        } else if root.val < low {
+            return trimRight
+        }
+        root.left = trimLeft
+        root.right = trimRight
+        return root
+    }
+    
+    // MARK: - 450. 删除二叉搜索树中的节点
+    static func deleteNode(_ root: TreeNode?, _ key: Int) -> TreeNode? {
+//        guard let root = root else { return nil }
+//        if root.left == nil && root.right == nil && root.val == key { return nil }
+//        var cur: TreeNode? = root
+//        var delParentNode: TreeNode?
+//        while cur != nil {
+//            if cur!.val > key {
+//                cur = cur?.left
+//            } else if cur!.val < key {
+//                cur = cur?.right
+//            } else {
+//                break
+//            }
+//            delParentNode = cur
+//        }
+//        guard let cur = cur else { return nil }
+//        var replaceNodeParentNode: TreeNode = cur
+//        if let left = cur.left {
+//            var leftMaxNode: TreeNode = left
+//            while leftMaxNode.right != nil {
+//                leftMaxNode = leftMaxNode.right!
+//            }
+//            cur.val = leftMaxNode.val
+//        } else if let right = cur.right {
+//
+//        } else {
+//            delParentNode
+//        }
+//        return root
+        
+        guard let root = root else { return nil }
+        if root.val > key {
+            root.left = deleteNode(root.left, key)
+        } else if root.val < key {
+            root.right = deleteNode(root.right, key)
+        } else {
+            if root.left == nil && root.right == nil {
+                return nil
+            }
+            if root.right == nil {
+                return root.left
+            }
+            if root.left == nil {
+                return root.right
+            }
+            // 找到删除节点右子树的最小节点当做新的根节点
+            var newRoot: TreeNode? = root.right
+            while newRoot?.left != nil {
+                newRoot = newRoot?.left
+            }
+            // 删除右子树的最小节点
+            root.right = deleteNode(root.right, newRoot!.val)
+            // 将原左右子树拼接到新节点上
+            newRoot?.right = root.right
+            newRoot?.left = root.left
+            return newRoot
+        }
+        return root
+    }
+    
+    // MARK: - 110. 平衡二叉树
+    static func isBalanced(_ root: TreeNode?) -> Bool {
+        /*
+        func height(_ root: TreeNode?) -> Int {
+            if root == nil { return 0 }
+            return max(height(root?.left), height(root?.right)) + 1
+        }
+        guard let root = root else { return true }
+        let isRootBalanced = abs(height(root.left) - height(root.right)) <= 1
+        return isRootBalanced && isBalanced(root.left) && isBalanced(root.right)
+         */
+        
+        func height(_ root: TreeNode?) -> Int {
+            if root == nil { return 0 }
+            let leftHeight = height(root?.left)
+            if leftHeight == -1 { return -1 }
+            let rightHeight = height(root?.right)
+            if rightHeight == -1 { return -1 }
+            return abs(leftHeight - rightHeight) > 1 ? -1 : max(leftHeight, rightHeight) + 1
+        }
+        return height(root) >= 0 ? true : false
+    }
+    
+    // MARK: - 95. 不同的二叉搜索树 II
+    static func generateTrees(_ n: Int) -> [TreeNode?] {
+        func generateTrees(start: Int, end: Int) -> [TreeNode?] {
+            if start > end { return [nil] }
+            var allTrees = [TreeNode?]()
+            for i in start...end {
+                let leftTrees = generateTrees(start: start, end: i - 1)
+                let rightTrees = generateTrees(start: i + 1, end: end)
+                for left in leftTrees {
+                    for right in rightTrees {
+                        let root = TreeNode(i)
+                        root.left = left
+                        root.right = right
+                        allTrees.append(root)
+                    }
+                }
+            }
+            return allTrees
+        }
+        return generateTrees(start: 1, end: n)
+    }
+    
+    // MARK: - 108. 将有序数组转换为二叉搜索树
+    static func sortedArrayToBST(_ nums: [Int]) -> TreeNode? {
+        func generateBST(_ nums: [Int], start: Int, end: Int) -> TreeNode? {
+            if start > end {
+                return nil
+            }
+            let mid = start + (end - start) / 2
+            let node = TreeNode(nums[mid])
+            node.left = generateBST(nums, start: start, end: mid - 1)
+            node.right = generateBST(nums, start: mid + 1, end: end)
+            return node
+        }
+        return generateBST(nums, start: 0, end: nums.count - 1)
+    }
+    
+    // MARK: - 109. 有序链表转换二叉搜索树
+    static func sortedListToBST(_ head: ListNode?) -> TreeNode? {
+        guard let head = head else { return nil }
+        guard head.next != nil else { return TreeNode(head.val) }
+        var slow: ListNode? = head
+        var fast: ListNode? = head
+        var pre: ListNode? = head
+        while fast?.next?.next != nil {
+            fast = fast?.next?.next
+            pre = slow
+            slow = slow?.next
+        }
+        let next = slow?.next
+        pre?.next = nil
+        let node = TreeNode(slow!.val)
+        if slow?.val == fast?.val {
+            node.left = nil
+        } else {
+            node.left = sortedListToBST(head)
+        }
+        node.right = sortedListToBST(next)
+        return node
     }
 }
