@@ -259,4 +259,60 @@ class TwoPointers {
     static func fourSum(_ nums: [Int], _ target: Int) -> [[Int]] {
         return []
     }
+    
+    // MAKR: - 11. 盛最多水的容器（中等）
+    static func maxArea(_ height: [Int]) -> Int {
+        var left = 0
+        var right = height.count - 1
+        var maxValue = 0
+        while left < right {
+            let curValue = (right - left) * min(height[left], height[right])
+            maxValue = max(curValue, maxValue)
+            if height[left] < height[right] {
+                left += 1
+            } else {
+                right -= 1
+            }
+        }
+        return maxValue
+    }
+    
+//    [4,2,3]
+//              1
+//    1         1
+//    1     1   1
+//    1 1   1 1 1
+//    1 1   1 1 1
+    // MAKR: - 42. 接雨水（困难 ）
+    static func trap(_ height: [Int]) -> Int {
+        var left = 0
+        var right = height.count - 1
+        while left < height.count, height[left] == 0 {
+            left += 1
+        }
+        while right >= 0, height[right] == 0 {
+            right -= 1
+        }
+        var result = 0
+        while left < right {
+            let curHeight = height[left]
+            if height[left + 1] < curHeight {
+                var rightMatchIndex = left + 1
+                while rightMatchIndex <= right, height[rightMatchIndex] >= height[left + 1]  {
+                    rightMatchIndex += 1
+                }
+                if rightMatchIndex <= right {
+                    for i in (left + 1)..<rightMatchIndex {
+                        result += height[left] - height[i]
+                    }
+                    left = rightMatchIndex
+                } else {
+                    left += 1
+                }
+            } else {
+                left += 1
+            }
+        }
+        return result
+    }
 }
