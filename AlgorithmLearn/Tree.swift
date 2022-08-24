@@ -1413,4 +1413,170 @@ class Tree {
         node.right = sortedListToBST(next)
         return node
     }
+    
+    // MARK: - 105. 从前序与中序遍历序列构造二叉树（中等）
+    static func buildTree(_ preorder: [Int], _ inorder: [Int]) -> TreeNode? {
+        var varIndexMap = [Int : Int]()
+        func buildTree(_ preorder: [Int], preStart: Int, preEnd: Int,
+                       _ inorder: [Int], inStart: Int, inEnd: Int) -> TreeNode? {
+            if preStart > preEnd { return nil }
+            let inRootVal = preorder[preStart]
+            let inRootIndex = varIndexMap[inRootVal]!
+            let leftSize = inRootIndex - inStart
+            let node = TreeNode(inRootVal)
+            node.left = buildTree(preorder, preStart: preStart + 1, preEnd: preStart + leftSize, inorder, inStart: inStart, inEnd: inRootIndex - 1)
+            node.right = buildTree(preorder, preStart: preStart + leftSize + 1, preEnd: preEnd, inorder, inStart: inRootIndex + 1, inEnd: inEnd)
+            return node
+        }
+        for (index, val) in inorder.enumerated() {
+            varIndexMap[val] = index
+        }
+        return buildTree(preorder, preStart: 0, preEnd: preorder.count - 1, inorder, inStart: 0, inEnd: inorder.count - 1)
+    }
+    
+    // MARK: - 106. 从中序与后序遍历序列构造二叉树（中等）
+    static func buildTree2(_ inorder: [Int], _ postorder: [Int]) -> TreeNode? {
+        var varIndexMap = [Int : Int]()
+        func buildTree2(_ inorder: [Int], inStart: Int, inEnd: Int,
+                       _ postorder: [Int], postStart: Int, postEnd: Int) -> TreeNode? {
+            if postStart > postEnd { return nil }
+            let inRootVal = postorder[postEnd]
+            let inRootIndex = varIndexMap[inRootVal]!
+            let leftSize = inRootIndex - inStart
+            let node = TreeNode(inRootVal)
+            node.left = buildTree2(inorder, inStart: inStart, inEnd: inRootIndex - 1, postorder, postStart: postStart, postEnd: postStart + leftSize - 1)
+            node.right = buildTree2(inorder, inStart: inRootIndex + 1, inEnd: inEnd, postorder, postStart: postStart + leftSize, postEnd: postEnd - 1)
+            return node
+        }
+        for (index, val) in inorder.enumerated() {
+            varIndexMap[val] = index
+        }
+        return buildTree2(inorder, inStart: 0, inEnd: inorder.count - 1, postorder, postStart: 0, postEnd: postorder.count - 1)
+    }
+    
+    // MARK: - 114. 二叉树展开为链表（中等）
+    static func flatten(_ root: TreeNode?) {
+        var cur = root
+        while cur != nil {
+            if let left = cur?.left {
+                var pre: TreeNode? = left
+                while pre?.right != nil {
+                    pre = pre?.right
+                }
+                pre?.right = cur?.right
+                cur?.right = cur?.left
+                cur?.left = nil
+            }
+            cur = cur?.right
+        }
+    }
+    
+    // MARK: - 235. 二叉搜索树的最近公共祖先
+    static func lowestCommonAncestor(_ root: TreeNode?, _ p: TreeNode?, _ q: TreeNode?) -> TreeNode? {
+        // 递归
+        /*
+        guard let root = root else { return nil }
+        guard let p = p else { return q }
+        guard let q = q else { return p }
+        if q.val > root.val && p.val > root.val {
+            return lowestCommonAncestor(root.right, p, q)
+        }
+        if q.val < root.val && p.val < root.val {
+            return lowestCommonAncestor(root.left, p, q)
+        }
+        return root
+         */
+        guard let root = root else { return nil }
+        guard let p = p else { return q }
+        guard let q = q else { return p }
+        var ans: TreeNode = root
+        while true {
+            if q.val > ans.val && p.val > ans.val {
+                ans = ans.right!
+            } else if q.val < ans.val && p.val < ans.val {
+                ans = ans.left!
+            } else {
+                break
+            }
+        }
+        return ans
+    }
+    
+    // MARK: - 236. 二叉树的最近公共祖先
+    static func lowestCommonAncestor2(_ root: TreeNode?, _ p: TreeNode?, _ q: TreeNode?) -> TreeNode? {
+        guard let root = root else { return nil }
+        guard let p = p else { return q }
+        guard let q = q else { return p }
+        if root.val == p.val || root.val == q.val { return root }
+        
+        let left = lowestCommonAncestor(root.left, p, q)
+        let right = lowestCommonAncestor(root.right, p, q)
+        
+        if left == nil && right != nil { return right }
+        if left != nil && right == nil { return left }
+        if left != nil && right != nil { return root }
+        return nil
+    }
+    
+    // MARK: - 501. 二叉搜索树中的众数
+    static func findMode(_ root: TreeNode?) -> [Int] {
+        var ans = [Int]()
+        var maxCount = 0
+        var curCount = 0
+        var preVal = Int.min
+        
+        func traversal(_ root: TreeNode?) {
+            guard let root = root else { return }
+            traversal(root.left)
+            if preVal == root.val {
+                curCount += 1
+            } else {
+                curCount = 1
+                preVal = root.val
+            }
+            if curCount > maxCount {
+                ans = [root.val]
+                maxCount = curCount
+            } else if curCount == maxCount {
+                ans.append(root.val)
+            }
+            
+            traversal(root.right)
+        }
+        traversal(root)
+        return ans
+    }
+    
+    // MARK: - 99. 恢复二叉搜索树
+    static func recoverTree(_ root: TreeNode?) {
+        guard let root = root else { return }
+        var stack = [TreeNode]()
+        var cur: TreeNode? = root
+        var pre: TreeNode?
+        var x: TreeNode?
+        var y: TreeNode?
+        while cur != nil || !stack.isEmpty {
+            if cur != nil {
+                stack.append(cur!)
+                cur = cur?.left
+            } else {
+                let node = stack.removeLast()
+                if pre != nil, node.val < pre!.val {
+                    y = node
+                    if x == nil {
+                        x = pre
+                    } else {
+                        break
+                    }
+                }
+                pre = node
+                cur = node.right
+            }
+        }
+        if x != nil && y != nil {
+            let temp = x!.val
+            x?.val = y!.val
+            y?.val = temp
+        }
+    }
 }
