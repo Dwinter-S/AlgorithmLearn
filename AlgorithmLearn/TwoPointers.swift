@@ -277,42 +277,83 @@ class TwoPointers {
         return maxValue
     }
     
-//    [4,2,3]
-//              1
-//    1         1
-//    1     1   1
-//    1 1   1 1 1
-//    1 1   1 1 1
     // MAKR: - 42. 接雨水（困难 ）
     static func trap(_ height: [Int]) -> Int {
+        var ans = 0
         var left = 0
         var right = height.count - 1
-        while left < height.count, height[left] == 0 {
-            left += 1
-        }
-        while right >= 0, height[right] == 0 {
-            right -= 1
-        }
-        var result = 0
+        var leftMax = 0
+        var rightMax = 0
         while left < right {
-            let curHeight = height[left]
-            if height[left + 1] < curHeight {
-                var rightMatchIndex = left + 1
-                while rightMatchIndex <= right, height[rightMatchIndex] >= height[left + 1]  {
-                    rightMatchIndex += 1
-                }
-                if rightMatchIndex <= right {
-                    for i in (left + 1)..<rightMatchIndex {
-                        result += height[left] - height[i]
-                    }
-                    left = rightMatchIndex
-                } else {
-                    left += 1
-                }
+            leftMax = max(leftMax, height[left])
+            rightMax = max(rightMax, height[right])
+            if height[left] < height[right] {
+                ans += leftMax - height[left]
+                left += 1
+            } else {
+                ans += rightMax - height[right]
+                right -= 1
+            }
+        }
+        return ans
+    }
+    
+    // MARK: - 27. 移除元素
+    static func removeElement(_ nums: inout [Int], _ val: Int) -> Int {
+        var left = 0
+        var right = nums.count - 1
+        while left <= right {
+            if nums[left] == val {
+                nums[left] = nums[right]
+                right -= 1
             } else {
                 left += 1
             }
+            print("\(nums) \(left) \(right)")
         }
-        return result
+        return left
+    }
+    
+    // MARK: - 26. 删除有序数组中的重复项
+    static func removeDuplicates(_ nums: inout [Int]) -> Int {
+        guard nums.count > 1 else { return nums.count }
+        var slow = 0
+        var fast = 1
+        while fast < nums.count {
+            if nums[slow] != nums[fast] {
+                nums[slow + 1] = nums[fast]
+                slow += 1
+            }
+            fast += 1
+        }
+        return slow + 1
+    }
+    
+    // MARK: - 80. 删除有序数组中的重复项 II（中等）
+    static func removeDuplicates2(_ nums: inout [Int]) -> Int {
+        guard nums.count > 1 else { return nums.count }
+        var slow = 0
+        var fast = 1
+        var repeatCount = 1
+        while fast < nums.count {
+            if nums[slow] != nums[fast] {
+                if repeatCount >= 2 {
+                    nums[slow + 2] = nums[fast]
+                    slow += 2
+                } else {
+                    nums[slow + 1] = nums[fast]
+                    slow += 1
+                }
+                repeatCount = 1
+            } else {
+                repeatCount += 1
+            }
+            fast += 1
+        }
+        if repeatCount >= 2 {
+            return slow + 2
+        } else {
+            return slow + 1
+        }
     }
 }
