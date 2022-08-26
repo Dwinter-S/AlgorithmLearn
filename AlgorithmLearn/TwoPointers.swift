@@ -331,29 +331,96 @@ class TwoPointers {
     
     // MARK: - 80. 删除有序数组中的重复项 II（中等）
     static func removeDuplicates2(_ nums: inout [Int]) -> Int {
+        /*
         guard nums.count > 1 else { return nums.count }
         var slow = 0
         var fast = 1
         var repeatCount = 1
         while fast < nums.count {
             if nums[slow] != nums[fast] {
-                if repeatCount >= 2 {
-                    nums[slow + 2] = nums[fast]
-                    slow += 2
-                } else {
+                nums[slow + 1] = nums[fast]
+                slow += 1
+                repeatCount = 1
+            } else {
+                if repeatCount == 1 {
                     nums[slow + 1] = nums[fast]
                     slow += 1
                 }
-                repeatCount = 1
-            } else {
                 repeatCount += 1
             }
             fast += 1
+            print("\(nums)")
         }
-        if repeatCount >= 2 {
-            return slow + 2
-        } else {
-            return slow + 1
+        return slow + 1
+         */
+        let count = nums.count
+        guard count > 2 else { return count }
+        // slow代表删除后数组的长度
+        var slow = 2
+        var fast = 2
+        while fast < count {
+            // 至多两个元素重复，慢指针最后一个元素下标slow-1
+            // 如果nums[slow - 2] == nums[fast]，则至少有三个元素重复（slow-1、slow-2、fast）,否则至多两个元素重复（slow-1、slow-2），nums[fast]赋值给nums[slow]
+            if nums[slow - 2] != nums[fast] {
+                nums[slow] = nums[fast]
+                slow += 1
+            }
+            fast += 1
         }
+        return slow
+    }
+    
+    // MARK: - 83. 删除排序链表中的重复元素
+    static func deleteDuplicates(_ head: ListNode?) -> ListNode? {
+        var cur = head
+        while cur != nil {
+            while cur?.val == cur?.next?.val {
+                cur?.next = cur?.next?.next
+            }
+            cur = cur?.next
+        }
+        return head
+    }
+    
+    // MARK: - 82. 删除排序链表中的重复元素 II（中等）
+    static func deleteDuplicate2(_ head: ListNode?) -> ListNode? {
+        let dummy = ListNode()
+        dummy.next = head
+        var cur = head
+        var pre: ListNode? = dummy
+        while cur != nil {
+            if cur?.val != cur?.next?.val {
+                pre = pre?.next
+            } else {
+                while cur?.val == cur?.next?.val {
+                    cur?.next = cur?.next?.next
+                }
+                pre?.next = cur?.next
+            }
+            cur = cur?.next
+        }
+        return dummy.next
+    }
+    
+    // MARK: - 611. 有效三角形的个数（中等）
+    static func triangleNumber(_ nums: [Int]) -> Int {
+        let count = nums.count
+        guard count >= 3 else { return 0 }
+        let sortedNums = nums.sorted()
+        var ans = 0
+        for i in 0..<count-2 {
+            for j in i+1..<count {
+                var right = count - 1
+                while j < right {
+                    if sortedNums[i] + sortedNums[j] <= sortedNums[right] {
+                        right -= 1
+                    } else {
+                        ans += right - j
+                        break
+                    }
+                }
+            }
+        }
+        return ans
     }
 }
