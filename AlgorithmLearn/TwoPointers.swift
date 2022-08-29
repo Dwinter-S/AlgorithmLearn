@@ -854,4 +854,165 @@ class TwoPointers {
         }
         return curA
     }
+    
+    // MARK: - 88. 合并两个有序数组
+    static func merge(_ nums1: inout [Int], _ m: Int, _ nums2: [Int], _ n: Int) {
+        var right = m + n - 1
+        var m = m - 1
+        var n = n - 1
+        while n >= 0 {
+            while m >= 0, nums1[m] > nums2[n] {
+                nums1[right] = nums1[m]
+                m -= 1
+                right -= 1
+            }
+            nums1[right] = nums2[n]
+            n -= 1
+            right -= 1
+        }
+    }
+    
+    // MARK: - 475. 供暖器（中等）
+    static func findRadius(_ houses: [Int], _ heaters: [Int]) -> Int {
+        // 排序加二分查找
+        func binarySearch(_ nums: [Int], target: Int) -> Int {
+            var left = 0
+            var right = nums.count - 1
+            if nums[left] > target {
+                return -1
+            }
+            while left < right {
+                let mid = left + (right - left + 1) / 2
+                if nums[mid] <= target {
+                    left = mid
+                } else {
+                    right = mid - 1
+                }
+            }
+            return left
+        }
+        var ans = 0
+        let heaters = heaters.sorted()
+        for house in houses {
+            // 找到当前房屋左侧最近的供暖器
+            let i = binarySearch(heaters, target: house)
+            // 找到当前房屋右侧最近的供暖器
+            let j = i + 1
+            let leftDistance = i < 0 ? Int.max : house - heaters[i]
+            let rightDistance = j >= heaters.count ? Int.max : heaters[j] - house
+            // 当前房屋的最小供暖半径
+            let curDistance = min(leftDistance, rightDistance)
+            // 所有房屋的最小供暖半径的最大值
+            ans = max(ans, curDistance)
+        }
+        return ans
+    }
+    
+    // MARK: - 141. 环形链表
+    static func hasCycle(_ head: ListNode?) -> Bool {
+        var slow = head
+        var fast = head
+        while fast != nil && fast?.next != nil {
+            slow = slow?.next
+            fast = fast?.next?.next
+            if slow === fast {
+                return true
+            }
+        }
+        return false
+    }
+    
+    // MARK: - 142. 环形链表 II（中等）
+    static func detectCycle(_ head: ListNode?) -> ListNode? {
+        var slow = head
+        var fast = head
+        while fast != nil && fast?.next != nil {
+            slow = slow?.next
+            fast = fast?.next?.next
+            if slow === fast {
+                break
+            }
+        }
+        if fast != nil && fast?.next != nil {
+            fast = head
+            while slow !== fast {
+                slow = slow?.next
+                fast = fast?.next
+            }
+            return slow
+        }
+        return nil
+    }
+    
+    // MARK: - 143. 重排链表（中等）
+    static func reorderList(_ head: ListNode?) {
+        func reverseList(_ head: ListNode?) -> ListNode? {
+            var cur: ListNode? = head
+            var pre: ListNode?
+            while cur != nil {
+                let next = cur?.next
+                cur?.next = pre
+                pre = cur
+                cur = next
+            }
+            return pre
+        }
+        let dummy = ListNode()
+        dummy.next = head
+        var slow = head
+        var fast = head
+        while fast?.next != nil && fast?.next?.next != nil {
+            slow = slow?.next
+            fast = fast?.next?.next
+        }
+        let head2 = slow?.next
+        slow?.next = nil
+        let reversedHead2 = reverseList(head2)
+        var l2 = reversedHead2
+        var cur = dummy.next
+        while l2 != nil {
+            let next1 = cur?.next
+            let next2 = l2?.next
+            l2?.next = next1
+            cur?.next = l2
+            l2 = next2
+            cur = next1
+        }
+    }
+    
+    // MARK: - 234. 回文链表
+    static func isPalindrome(_ head: ListNode?) -> Bool {
+        func reverseList(_ head: ListNode?) -> ListNode? {
+            var cur: ListNode? = head
+            var pre: ListNode?
+            while cur != nil {
+                let next = cur?.next
+                cur?.next = pre
+                pre = cur
+                cur = next
+            }
+            return pre
+        }
+        let dummy = ListNode()
+        dummy.next = head
+        var slow = head
+        var fast = head
+        while fast?.next != nil && fast?.next?.next != nil {
+            slow = slow?.next
+            fast = fast?.next?.next
+        }
+        let head2 = slow?.next
+        slow?.next = nil
+        let reversedHead2 = reverseList(head2)
+        var l1 = dummy.next
+        var l2 = reversedHead2
+        while l2 != nil {
+            if l1?.val != l2?.val {
+                return false
+            }
+            l1 = l1?.next
+            l2 = l2?.next
+        }
+        return l1 == nil || l1?.next == nil
+    }
 }
