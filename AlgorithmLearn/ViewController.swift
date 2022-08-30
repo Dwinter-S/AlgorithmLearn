@@ -21,7 +21,7 @@ class ViewController: UIViewController {
 //        let root = TreeNode(arr: [1,3,2,5,3,nil,9])
         var test = [0,0,1,1,1,1,2,3,3]
         
-        print(TwoPointers.findRadius([1, 2, 3, 4], [1, 4]))
+        print(ALArray.imageSmoother([[1,1,1],[1,0,1],[1,1,1]]))
 //        let item = AVPlayerItem(url: URL(string: "https://static.ieltsbro.com/uploads/app_oral_practice_comment/audio_record/1660272310666.mp3")!)
     
         

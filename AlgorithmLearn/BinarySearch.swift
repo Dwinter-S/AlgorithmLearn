@@ -580,4 +580,165 @@ class BinarySearch {
     static func findMedianSortedArrays(_ nums1: [Int], _ nums2: [Int]) -> Double {
         return 0
     }
+    
+    // MARK: - 153. 寻找旋转排序数组中的最小值（中等）
+    static func findMin(_ nums: [Int]) -> Int {
+        let len = nums.count
+        var left = 0
+        var right = len - 1
+        while left < right {
+            let mid = left + (right - left) / 2
+            if nums[mid] < nums[right] {
+                right = mid
+            } else {
+                left = mid + 1
+            }
+        }
+        return nums[left]
+    }
+    
+    // MARK: - 154. 寻找旋转排序数组中的最小值 II（困难）
+    static func findMin2(_ nums: [Int]) -> Int {
+        let len = nums.count
+        var left = 0
+        var right = len - 1
+        while left < right {
+            let mid = left + (right - left) / 2
+            if nums[mid] < nums[right] {
+                right = mid
+            } else if nums[mid] > nums[right] {
+                left = mid + 1
+            } else {
+                right -= 1
+            }
+        }
+        return nums[left]
+    }
+    
+    // MARK: - 33. 搜索旋转排序数组
+    static func search(_ nums: [Int], _ target: Int) -> Int {
+        let count = nums.count
+        var left = 0
+        var right = count - 1
+        while left <= right {
+            let mid = left + (right - left) / 2
+            if nums[mid] == target {
+                return mid
+            } else {
+                if nums[mid] >= nums[0] {
+                    if target >= nums[0] && target < nums[mid] {
+                        right = mid - 1
+                    } else {
+                        left = mid + 1
+                    }
+                } else {
+                    if target > nums[mid] && target <= nums[count - 1] {
+                        left = mid + 1
+                    } else {
+                        right = mid - 1
+                    }
+                }
+            }
+        }
+        return -1
+    }
+    
+    // MARK: - 81. 搜索旋转排序数组 II
+    static func search2(_ nums: [Int], _ target: Int) -> Bool {
+        let count = nums.count
+        var left = 0
+        var right = count - 1
+        while left <= right {
+            let mid = left + (right - left) / 2
+            if nums[mid] == target {
+                return true
+            } else {
+                if nums[left] == nums[mid] && nums[right] == nums[mid] {
+                    left += 1
+                    right -= 1
+                } else if nums[mid] >= nums[left] {
+                    if target >= nums[left] && target < nums[mid] {
+                        right = mid - 1
+                    } else {
+                        left = mid + 1
+                    }
+                } else if nums[mid] < nums[left] {
+                    if target > nums[mid] && target <= nums[right] {
+                        left = mid + 1
+                    } else {
+                        right = mid - 1
+                    }
+                }
+            }
+        }
+        return false
+    }
+    
+    // MARK: - 74. 搜索二维矩阵（中等）
+    static func searchMatrix(_ matrix: [[Int]], _ target: Int) -> Bool {
+        let row = matrix.count
+        let column = matrix[0].count
+        var left = 0
+        var right = row - 1
+        var targetArr = [Int]()
+        while left <= right {
+            let mid = left + (right - left) / 2
+            if target < matrix[mid][0] {
+                right = mid - 1
+            } else if target > matrix[mid][column - 1] {
+                left = mid + 1
+            } else {
+                targetArr = matrix[mid]
+                break
+            }
+        }
+        guard !targetArr.isEmpty else { return false }
+        left = 0
+        right = column - 1
+        while left <= right {
+            let mid = left + (right - left) / 2
+            if target < targetArr[mid] {
+                right = mid - 1
+            } else if target > targetArr[mid] {
+                left = mid + 1
+            } else {
+               return true
+            }
+        }
+        return false
+    }
+    
+    // MARK: - 240. 搜索二维矩阵 II（中等）
+    static func searchMatrix2(_ matrix: [[Int]], _ target: Int) -> Bool {
+        func binarySearch(_ nums: [Int], target: Int) -> Bool {
+            var left = 0
+            var right = nums.count - 1
+            while left <= right {
+                let mid = left + (right - left) / 2
+                if target < nums[mid] {
+                    right = mid - 1
+                } else if target > nums[mid] {
+                    left = mid + 1
+                } else {
+                    return true
+                }
+            }
+            return false
+        }
+        
+        for nums in matrix {
+            if binarySearch(nums, target: target) {
+                return true
+            }
+        }
+        return false
+    }
+    
+    // MARK: - 378. 有序矩阵中第 K 小的元素（中等）
+//    static func kthSmallest(_ matrix: [[Int]], _ k: Int) -> Int {
+//
+//    }
+    
+    
+    
 }

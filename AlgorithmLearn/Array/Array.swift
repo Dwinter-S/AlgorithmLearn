@@ -854,4 +854,27 @@ class ALArray {
         return generate(rowIndex)[rowIndex - 1]
     }
     
+    // MARK: - 661. 图片平滑器
+    static func imageSmoother(_ img: [[Int]]) -> [[Int]] {
+        let rowCount = img.count
+        let columnCount = img[0].count
+        var ans = [[Int]](repeating: [Int](repeating: 0, count: columnCount), count: rowCount)
+        for i in 0..<rowCount {
+            for j in 0..<columnCount {
+                var sum = 0
+                var count = 0
+                for m in i-1...i+1 {
+                    for n in j-1...j+1{
+                        if m >= 0 && m < rowCount && n >= 0 && n < columnCount {
+                            sum += img[m][n]
+                            count += 1
+                        }
+                    }
+                }
+                ans[i][j] = sum / count
+            }
+        }
+        return ans
+    }
+    
 }
