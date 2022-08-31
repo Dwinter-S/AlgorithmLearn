@@ -1137,22 +1137,112 @@ class ALArray {
     }
     
     // MARK: - 498. 对角线遍历（中等）
-//    static func findDiagonalOrder(_ mat: [[Int]]) -> [Int] {
-//        var ans = [Int]()
-//        var t = 0
-//        var b = mat.count - 1
-//        var l = 0
-//        var r = mat[0].count - 1
-//        var i = 0
-//        var j = 0
-//        var toTopRight = true
-//        while i != b || j != r {
-//            ans.append(mat[i][j])
-//            if toTopRight {
-//                if i - 1 < 0 {
-//                    
-//                }
-//            }
-//        }
-//    }
+    static func findDiagonalOrder(_ mat: [[Int]]) -> [Int] {
+        var ans = [Int]()
+        var t = 0
+        var b = mat.count - 1
+        var l = 0
+        var r = mat[0].count - 1
+        var i = 0
+        var j = 0
+        var toTopRight = true
+        while true {
+            ans.append(mat[i][j])
+            if i == b && j == r { break }
+            if toTopRight {
+                if i - 1 >= 0 && j + 1 <= r {
+                    i -= 1
+                    j += 1
+                } else {
+                    toTopRight = false
+                    if j + 1 <= r {
+                        j += 1
+                    } else {
+                        i += 1
+                    }
+                }
+            } else {
+                if i + 1 <= b && j - 1 >= 0 {
+                    i += 1
+                    j -= 1
+                } else {
+                    toTopRight = true
+                    if i + 1 <= b {
+                        i += 1
+                    } else {
+                        j += 1
+                    }
+                }
+            }
+        }
+        return ans
+    }
+    
+    // MARK: - 566. 重塑矩阵
+    static func matrixReshape(_ mat: [[Int]], _ r: Int, _ c: Int) -> [[Int]] {
+        let rowCount = mat.count
+        let columnCount = mat[0].count
+        guard r * c == rowCount * columnCount else { return mat }
+        var ans = [[Int]](repeating: [Int](repeating: 0, count: c), count: r)
+        for i in 0..<r {
+            for j in 0..<c {
+                let index = c * i + j
+                let x = index / columnCount
+                let y = index % columnCount
+                ans[i][j] = mat[x][y]
+            }
+        }
+        return ans
+    }
+    
+    // MARK: - 48. 旋转图像（中等）
+    static func rotate(_ matrix: inout [[Int]]) {
+        // 上下翻转
+        let n = matrix.count
+        for i in 0..<n/2 {
+            for j in 0..<n {
+                (matrix[i][j], matrix[n-i-1][j]) = (matrix[n-i-1][j], matrix[i][j])
+            }
+        }
+        // 对角线翻转
+        for i in 0..<n {
+            for j in 0..<i {
+                (matrix[i][j], matrix[j][i]) = (matrix[j][i], matrix[i][j])
+            }
+        }
+    }
+    
+    // MARK: - 73. 矩阵置零（中等）
+    static func setZeroes(_ matrix: inout [[Int]]) {
+        let rowCount = matrix.count
+        let columnCount = matrix[0].count
+        var zeroRows = [Int]()
+        var zeroColumns = [Int]()
+        for i in 0..<rowCount {
+            for j in 0..<columnCount {
+                if matrix[i][j] == 0 {
+                    if !zeroRows.contains(i) {
+                        zeroRows.append(i)
+                    }
+                    if !zeroColumns.contains(j) {
+                        zeroColumns.append(j)
+                    }
+                }
+            }
+        }
+        for i in 0..<rowCount {
+            for j in 0..<columnCount {
+                if zeroRows.contains(i) || zeroColumns.contains(j) {
+                    matrix[i][j] = 0
+                }
+            }
+        }
+    }
+    
+    // MARK: - 289. 生命游戏
+    static func gameOfLife(_ board: inout [[Int]]) {
+        var r = board.count
+        var c = board[0].count
+       
+    }
 }

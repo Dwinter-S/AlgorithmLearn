@@ -1015,4 +1015,25 @@ class TwoPointers {
         }
         return l1 == nil || l1?.next == nil
     }
+    
+    // MARK: - 457. 环形数组是否存在循环
+//    static func circularArrayLoop(_ nums: [Int]) -> Bool {
+//
+//    }
+    
+    // MARK: - 287. 寻找重复数
+    static func findDuplicate(_ nums: [Int]) -> Int {
+        var slow = 0
+        var fast = 0
+        repeat {
+            slow = nums[slow]
+            fast = nums[nums[fast]]
+        } while (slow != fast)
+        slow = 0
+        while slow != fast {
+            slow = nums[slow]
+            fast = nums[fast]
+        }
+        return slow
+    }
 }
