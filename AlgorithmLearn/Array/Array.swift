@@ -877,4 +877,282 @@ class ALArray {
         return ans
     }
     
+    // MARK: - 598. 范围求和 II
+    static func maxCount(_ m: Int, _ n: Int, _ ops: [[Int]]) -> Int {
+        var minX = m
+        var minY = n
+        for op in ops {
+            minX = min(minX, op[0])
+            minY = min(minY, op[1])
+        }
+        return minX * minY
+    }
+    
+    // MARK: - 419. 甲板上的战舰（中等）
+    static func countBattleships(_ board: [[Character]]) -> Int {
+        /*
+        var board = board
+        let rowCount = board.count
+        let columnCount = board[0].count
+        var ans = 0
+        for row in 0..<rowCount {
+            for column in 0..<columnCount {
+                let c = board[row][column]
+                if c == "X" {
+                    ans += 1
+                    // 找到一个X,将以这个X为起点的其余X全部置为.,这样之后就不会遍历到同一个战舰
+                    for i in row + 1..<rowCount {
+                        if board[i][column] == "X" {
+                            board[i][column] = "."
+                        } else {
+                            break
+                        }
+                    }
+                    for j in column + 1..<columnCount {
+                        if board[row][j] == "X" {
+                            board[row][j] = "."
+                        } else {
+                            break
+                        }
+                    }
+                }
+            }
+        }
+        return ans
+         */
+        
+        // 一次扫描，找到战舰的左上顶点，如果一个X满足正上方和正左方不是X则为战舰顶点
+        let r = board.count
+        let c = board[0].count
+        var ans = 0
+        for i in 0..<r {
+            for j in 0..<c {
+                if board[i][j] == "X" {
+                    if i > 0 && board[i - 1][j] == "X" {
+                        continue
+                    }
+                    if j > 0 && board[i][j - 1] == "X" {
+                        continue
+                    }
+                    ans += 1
+                }
+            }
+        }
+        return ans
+    }
+    
+    // MARK: - 189. 轮转数组（中等）
+    static func rotate(_ nums: inout [Int], _ k: Int) {
+        // 额外数组
+        /*
+        let count = nums.count
+        let k = k % count
+        let origin = nums
+        for i in 0..<count {
+            if i < k {
+                nums[i] = origin[count - k + i]
+            } else {
+                nums[i] = origin[i - k]
+            }
+        }
+         */
+        
+        // 环状替换
+        /*
+        // 求最大公约数
+        func gcd(_ x: Int, _ y: Int) -> Int {
+            return y > 0 ? gcd(y, x % y) : x
+        }
+        let count = nums.count
+        let k = k % count
+        let n = gcd(k, count)
+        
+        for start in 0..<n {
+            var pre = nums[start]
+            var cur = start
+            repeat {
+                cur = (cur + k) % count
+                let temp = nums[cur]
+                nums[cur] = pre
+                pre = temp
+            }
+            while cur != start
+        }
+        */
+        
+        // 反转数组
+        // 先将整个数组反转，再分别反转前k个元素和和后n-k个元素
+        func reverse(_ nums: inout [Int], start: Int, end: Int) {
+            var left = start
+            var right = end
+            while left < right {
+                (nums[left], nums[right]) = (nums[right], nums[left])
+                left += 1
+                right -= 1
+            }
+        }
+        let count = nums.count
+        let k = k % count
+        reverse(&nums, start: 0, end: count - 1)
+        reverse(&nums, start: 0, end: k - 1)
+        reverse(&nums, start: k, end: count - 1)
+    }
+    
+    // MARK: - 396. 旋转函数（中等）
+    static func maxRotateFunction(_ nums: [Int]) -> Int {
+        // 找规律
+        let len = nums.count
+        var numsSum = 0
+        var f = 0
+        for i in 0..<len {
+            numsSum += nums[i]
+            f += i * nums[i]
+        }
+        var ans = f
+        for i in 1..<len {
+            f = f + numsSum - len * nums[len - i]
+            ans = max(ans, f)
+        }
+        return ans
+    }
+    
+    // MARK: - 54. 螺旋矩阵（中等）
+    static func spiralOrder(_ matrix: [[Int]]) -> [Int] {
+        /*
+        var rMin = 0
+        var rMax = matrix.count - 1
+        var cMin = 0
+        var cMax = matrix[0].count - 1
+        var i = 0
+        var j = 0
+        var ans = [Int]()
+        let directions = [0, 1, 2, 3]
+        var curDirection = 0
+        while i >= rMin && i <= rMax && j >= cMin && j <= cMax {
+            ans.append(matrix[i][j])
+            if curDirection == 0 {
+                if j < cMax {
+                    j += 1
+                } else {
+                    i += 1
+                    rMin += 1
+                    curDirection = 1
+                }
+            } else if curDirection == 1 {
+                if i < rMax {
+                    i += 1
+                } else {
+                    j -= 1
+                    cMax -= 1
+                    curDirection = 2
+                }
+            } else if curDirection == 2 {
+                if j > cMin {
+                    j -= 1
+                } else {
+                    i -= 1
+                    rMax -= 1
+                    curDirection = 3
+                }
+            } else if curDirection == 3 {
+                if i > rMin {
+                    i -= 1
+                } else {
+                    j += 1
+                    cMin += 1
+                    curDirection = 0
+                }
+            }
+        }
+        return ans
+         */
+        var rMin = 0
+        var rMax = matrix.count - 1
+        var cMin = 0
+        var cMax = matrix[0].count - 1
+        var ans = [Int]()
+        while true {
+            for j in cMin...cMax {
+                ans.append(matrix[rMin][j])
+            }
+            rMin += 1
+            if rMin > rMax { break }
+            
+            for i in rMin...rMax {
+                ans.append(matrix[i][cMax])
+            }
+            cMax -= 1
+            if cMin > cMax { break }
+            
+            for j in (cMin...cMax).reversed() {
+                ans.append(matrix[rMax][j])
+            }
+            rMax -= 1
+            if rMin > rMax { break }
+            
+            for i in (rMin...rMax).reversed() {
+                ans.append(matrix[i][cMin])
+            }
+            cMin += 1
+            if cMin > cMax { break }
+        }
+        return ans
+    }
+    
+    // MARK: - 59. 螺旋矩阵 II（中等）
+    static func generateMatrix(_ n: Int) -> [[Int]] {
+        var rMin = 0
+        var rMax = n - 1
+        var cMin = 0
+        var cMax = n - 1
+        var ans = [[Int]](repeating: [Int](repeating: 0, count: n), count: n)
+        var num = 0
+        while true {
+            for j in cMin...cMax {
+                num += 1
+                ans[rMin][j] = num
+            }
+            rMin += 1
+            if rMin > rMax { break }
+            for i in rMin...rMax {
+                num += 1
+                ans[i][cMax] = num
+            }
+            cMax -= 1
+            if cMin > cMax { break }
+            for j in (cMin...cMax).reversed() {
+                num += 1
+                ans[rMax][j] = num
+            }
+            rMax -= 1
+            if rMin > rMax { break }
+            for i in (rMin...rMax).reversed() {
+                num += 1
+                ans[i][cMin] = num
+            }
+            cMin += 1
+            if cMin > cMax { break }
+        }
+        return ans
+    }
+    
+    // MARK: - 498. 对角线遍历（中等）
+//    static func findDiagonalOrder(_ mat: [[Int]]) -> [Int] {
+//        var ans = [Int]()
+//        var t = 0
+//        var b = mat.count - 1
+//        var l = 0
+//        var r = mat[0].count - 1
+//        var i = 0
+//        var j = 0
+//        var toTopRight = true
+//        while i != b || j != r {
+//            ans.append(mat[i][j])
+//            if toTopRight {
+//                if i - 1 < 0 {
+//                    
+//                }
+//            }
+//        }
+//    }
 }
