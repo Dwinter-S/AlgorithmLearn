@@ -31,8 +31,28 @@ class ViewController: UIViewController {
     
         item.addObserver(self, forKeyPath: #keyPath(AVPlayerItem.status), options: [.old, .new], context: nil)
         item.addObserver(self, forKeyPath: #keyPath(AVPlayerItem.duration), options: .new, context: nil)
-        player.replaceCurrentItem(with: item)
-        player.play()
+//        player.replaceCurrentItem(with: item)
+//        player.play()
+        
+        let button = UIButton()
+        button.backgroundColor = .yellow
+        button.titleLabel?.backgroundColor = .red
+        button.imageView?.backgroundColor = .blue
+        button.setTitleColor(.black, for: .normal)
+        button.setTitle("测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试", for: .normal)
+//        button.setTitle("测试", for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 12)
+//        button.setStyle(imagePosition: .left, imageSpaceToTitle: 20)
+//        button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+//        button.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: -200)
+        button.setImage(UIImage(named: "btn_like_sel"), for: .normal)
+        button.backgroundColor = .green
+        view.addSubview(button)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([button.centerXAnchor.constraint(equalTo: view.centerXAnchor), button.centerYAnchor.constraint(equalTo: view.centerYAnchor)])
+        NSLayoutConstraint.activate([button.leftAnchor.constraint(greaterThanOrEqualTo: view.leftAnchor, constant: 50)])
+//        NSLayoutConstraint.activate([button.widthAnchor.constraint(equalToConstant: 100), button.heightAnchor.constraint(equalToConstant: 50)])
+//        button.frame = CGRect(x: 100, y: 100, width: 300, height: 100)
     }
 
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {

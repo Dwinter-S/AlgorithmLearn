@@ -1245,4 +1245,28 @@ class ALArray {
         var c = board[0].count
        
     }
+    // MARK: - 303. 区域和检索 - 数组不可变
+    class NumArray {
+        
+        var preSums: [Int]
+        let nums: [Int]
+        init(_ nums: [Int]) {
+            let count = nums.count
+            preSums = [Int](repeating: 0, count: count)
+            self.nums = nums
+            var sum = 0
+            for i in 0..<count {
+                sum += nums[i]
+                preSums[i] = sum
+            }
+        }
+        
+        func sumRange(_ left: Int, _ right: Int) -> Int {
+            if left == 0 {
+                return preSums[right]
+            }
+            return preSums[right] - preSums[left - 1]
+        }
+        
+    }
 }
