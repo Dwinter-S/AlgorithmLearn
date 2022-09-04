@@ -714,17 +714,1048 @@ class ALString {
      */
     static func originalDigits(_ s: String) -> String {
         var result = ""
-        let englishNums = ["zero",
-                           "one",
-                           "two",
-                           "three",
-                           "four",
-                           "five",
-                           "six",
-                           "seven",
-                           "eight",
-                           "nine"]
+        let chars = Array(s)
+        var map = [Character : Int]()
+        for c in chars {
+            map[c] = (map[c] ?? 0) + 1
+        }
+        var arr = [Int](repeating: 0, count: 10)
+        arr[0] = map["z"] ?? 0
+        arr[2] = map["w"] ?? 0
+        arr[4] = map["u"] ?? 0
+        arr[6] = map["x"] ?? 0
+        arr[8] = map["g"] ?? 0
+        
+        arr[3] = (map["h"] ?? 0) - arr[8]
+        arr[5] = (map["f"] ?? 0) - arr[4]
+        arr[7] = (map["s"] ?? 0) - arr[6]
+        
+        arr[1] = (map["o"] ?? 0) - arr[0] - arr[2] - arr[4]
+        arr[9] = (map["i"] ?? 0) - arr[5] - arr[6] - arr[8]
+        
+        for i in 0..<10 {
+            for j in 0..<arr[i] {
+                result += "\(i)"
+            }
+        }
+        
         return result
     }
     
+    // MARK: - 657. 机器人能否返回原点
+    static func judgeCircle(_ moves: String) -> Bool {
+        var map: [Character : Int] = ["L" : 0, "R" : 0, "U" : 0, "D" : 0]
+        let chars = Array(moves)
+        for c in chars {
+            map[c] = map[c]! + 1
+        }
+        if map["L"] == map["R"] && map["U"] == map["D"] {
+            return true
+        }
+        return false
+    }
+    
+    // MARK: - 551. 学生出勤记录 I
+    static func checkRecord(_ s: String) -> Bool {
+        let chars = Array(s)
+        var absentCount = 0
+        var continuouslyLateCount = 0
+        for c in chars {
+            if c == "A" {
+                absentCount += 1
+                continuouslyLateCount = 0
+            } else if c == "L" {
+                continuouslyLateCount += 1
+                if continuouslyLateCount >= 3 {
+                    return false
+                }
+            } else {
+                continuouslyLateCount = 0
+            }
+        }
+        return absentCount < 2
+    }
+    
+    // MARK: - 696. 计数二进制子串
+    static func countBinarySubstrings(_ s: String) -> Int {
+        let chars = Array(s)
+        let n = chars.count
+        var i = 0
+        var last = 0
+        var ans = 0
+        while i < n {
+            let c = chars[i]
+            var count = 0
+            while i < n && chars[i] == c {
+                i += 1
+                count += 1
+            }
+            ans += min(count, last)
+            last = count
+        }
+        return ans
+    }
+    
+    // MARK: - 467. 环绕字符串中唯一的子字符串（中等）
+    static func findSubstringInWraproundString(_ p: String) -> Int {
+        let chars = Array(p)
+        var dp = [Int](repeating: 0, count: 26)
+        var k = 0
+        for i in 0..<chars.count {
+            if i > 0 {
+                let a = Int(chars[i].asciiValue!)
+                let b = Int(chars[i-1].asciiValue!)
+                if (a - b + 26) % 26 == 1 {
+                    k += 1
+                } else {
+                    k = 1
+                }
+            } else {
+                k = 1
+            }
+            let value = Int(chars[i].asciiValue! - Character("a").asciiValue!)
+            dp[value] = max(dp[value], k)
+        }
+        var ans = 0
+        for i in 0..<dp.count {
+            ans += dp[i]
+        }
+        return ans
+    }
+    
+    // MARK: - 535. TinyURL 的加密与解密
+    class Codec {
+        private var dataBase = [Int : String]()
+        // Encodes a URL to a shortened URL.
+        func encode(_ longUrl: String) -> String {
+            var key: Int = 0
+            while true {
+                key = (0..<Int.max).randomElement()!
+                if dataBase[key] == nil {
+                    break
+                }
+            }
+            dataBase[key] = longUrl
+            return "http://tinyurl.com/\(key)"
+        }
+        
+        // Decodes a shortened URL to its original URL.
+        func decode(_ shortUrl: String) -> String {
+            let index = shortUrl.lastIndex(of: "/")!
+            let key = shortUrl[shortUrl.index(after: index)..<shortUrl.endIndex]
+            return dataBase[Int(key)!]!
+        }
+    }
+    
+    // MARK: - 299. 猜数字游戏（中等）
+    static func getHint(_ secret: String, _ guess: String) -> String {
+        var map = [Character : Int]()
+        let sChars = Array(secret)
+        let gChars = Array(guess)
+        for c in sChars {
+            map[c] = (map[c] ?? 0) + 1
+        }
+        let len = sChars.count
+        var x = 0
+        for i in 0..<len {
+            if sChars[i] == gChars[i] {
+                x += 1
+                map[sChars[i]] = map[sChars[i]]! - 1
+            }
+        }
+        var y = 0
+        for i in 0..<len {
+            if sChars[i] != gChars[i], let count = map[gChars[i]], count > 0 {
+                y += 1
+                map[gChars[i]] = count - 1
+            }
+        }
+        return "\(x)A\(y)B"
+    }
+    
+    // MARK: - 412. Fizz Buzz
+    static func fizzBuzz(_ n: Int) -> [String] {
+        var ans = [String]()
+        for i in 1...n {
+            if i % 3 == 0 && i % 5 == 0 {
+                ans.append("FizzBuzz")
+            } else if i % 3 == 0 {
+                ans.append("Fizz")
+            } else if i % 5 == 0 {
+                ans.append("Buzz")
+            } else {
+                ans.append("\(i)")
+            }
+        }
+        return ans
+    }
+    
+    // MARK: - 506. 相对名次
+    static func findRelativeRanks(_ score: [Int]) -> [String] {
+        // 排序
+        /*
+        let sortedScore = score.sorted(by: >)
+        var ans = [String]()
+        for score in score {
+            let rank = sortedScore.firstIndex(of: score)! + 1
+            if rank == 1 {
+                ans.append("Gold Medal")
+            } else if rank == 2 {
+                ans.append("Silver Medal")
+            } else if rank == 3 {
+                ans.append("Bronze Medal")
+            } else {
+                ans.append("\(rank)")
+            }
+        }
+        return ans
+         */
+        // 同时保存下标和值
+        var arr = [(index: Int, value: Int)]()
+        let len = score.count
+        for i in 0..<len {
+            arr.append((i, score[i]))
+        }
+        let strArr = ["Gold Medal", "Silver Medal", "Bronze Medal"]
+        let sortedArr = arr.sorted(by: { $0.value > $1.value })
+        var ans = [String](repeating: "", count: len)
+        for i in 0..<len {
+            if i >= 3 {
+                ans[sortedArr[i].index] = "\(i + 1)"
+            } else {
+                ans[sortedArr[i].index] = strArr[i]
+            }
+        }
+        return ans
+    }
+    
+    // MARK: - 539. 最小时间差（中等）
+    static func findMinDifference(_ timePoints: [String]) -> Int {
+        let len = timePoints.count
+        if len > 1440 { return 0 }
+        var allMinutes = [Int]()
+        for time in timePoints {
+            let arr = time.components(separatedBy: ":")
+            let hourChars = Array(arr[0])
+            let hour = arr[0].hasPrefix("0") ? Int(String(hourChars[1]))! : Int(arr[0])!
+            let minuteChars = Array(arr[1])
+            let minute = arr[1].hasPrefix("0") ? Int(String(minuteChars[1]))! : Int(arr[1])!
+            allMinutes.append(hour * 60 + minute)
+        }
+        let sortedMinutes = allMinutes.sorted()
+        var ans = Int.max
+        for i in 1..<len {
+            ans = min(sortedMinutes[i] - sortedMinutes[i - 1], ans)
+        }
+        // 第一个和最后一个的时间差
+        ans = min(sortedMinutes[0] + 1440 - sortedMinutes[len - 1], ans)
+        return ans
+    }
+    
+    // MARK: - 553. 最优除法（中等）
+    static func optimalDivision(_ nums: [Int]) -> String {
+        // 数学
+        let n = nums.count
+        if n == 1 { return "\(nums[0])" }
+        if n == 2 { return "\(nums[0])/\(nums[1])" }
+        var s = "\(nums[1])"
+        for i in 2..<n {
+            s += "/\(nums[i])"
+        }
+        return "\(nums[0])/(\(s))"
+    }
+    
+    // MARK: - 537. 复数乘法（中等）
+    static func complexNumberMultiply(_ num1: String, _ num2: String) -> String {
+        let arr1 = num1.components(separatedBy: "+")
+        let arr2 = num2.components(separatedBy: "+")
+        let num1Left = Int(arr1[0])!
+        let num1RightStr = arr1[1]
+        let num1Right = Int(num1RightStr[num1RightStr.startIndex..<num1RightStr.index(before: num1RightStr.endIndex)])!
+        let num2Left = Int(arr2[0])!
+        let num2RightStr = arr2[1]
+        let num2Right = Int(num2RightStr[num2RightStr.startIndex..<num2RightStr.index(before: num2RightStr.endIndex)])!
+        let ansLeft = num1Left * num2Left - (num1Right * num2Right)
+        let ansRight = num1Left * num2Right + num1Right * num2Left
+        return "\(ansLeft)+\(ansRight)i"
+    }
+    
+    // MARK: - 592. 分数加减运算（中等）
+    static func fractionAddition(_ expression: String) -> String {
+        func gcd(_ x: Int, _ y: Int) -> Int {
+            return y > 0 ? gcd(y, x % y) : x
+        }
+        
+        var numsPair = [(t: Int, b: Int)]()
+        var chars = Array(expression)
+        if chars.first != "+" && chars.first != "-" {
+            chars.insert("+", at: 0)
+        }
+        let n = chars.count
+        var i = 0
+        var start = 0
+        while i < n {
+            if i + 1 == n || (chars[i + 1] == "+" || chars[i + 1] == "-") {
+                let str = String(chars[start...i])
+                let arr = str.components(separatedBy: "/")
+                numsPair.append((Int(arr[0])!, Int(arr[1])!))
+                start = i + 1
+            }
+            i += 1
+        }
+        var cur = numsPair[0]
+        for i in 1..<numsPair.count {
+            let newB = cur.b * numsPair[i].b / gcd(cur.b, numsPair[i].b)
+            let newT = (newB / cur.b) * cur.t + (newB / numsPair[i].b) * numsPair[i].t
+            cur = (newT, newB)
+        }
+        let f = gcd(abs(cur.t), cur.b)
+        if cur.t % cur.b == 0 {
+            return "\(cur.t / cur.b)/1"
+        }
+        return "\(cur.t/f)/\(cur.b/f)"
+    }
+    
+    // MARK: - 640. 求解方程（中等）
+    static func solveEquation(_ equation: String) -> String {
+        // 吐血解法
+        /*
+        let arr = equation.components(separatedBy: "=")
+        var start = 0
+        let left = Array(arr[0])
+        var final = [[Character]]()
+        for i in 0..<left.count {
+            let c = left[i]
+            let isLast = i == left.count - 1
+            if c == "+" || c == "-" || isLast {
+                let end = isLast ? i + 1 : i
+                if end <= start { continue }
+                var value = Array(left[start..<end])
+                if value[0] != "+" && value[0] != "-" {
+                    value.insert("+", at: 0)
+                }
+                final.append(value)
+                start = i
+            }
+        }
+        start = 0
+        let right = Array(arr[1])
+        for i in 0..<right.count {
+            let c = right[i]
+            let isLast = i == right.count - 1
+            if c == "+" || c == "-" || isLast {
+                let end = isLast ? i + 1 : i
+                if end <= start { continue }
+                var value = Array(right[start..<end])
+                if value[0] == "+" {
+                    value[0] = "-"
+                } else if value[0] == "-" {
+                    value[0] = "+"
+                } else {
+                    value.insert("-", at: 0)
+                }
+                final.append(value)
+                start = i
+            }
+        }
+        var xLeft = 0
+        var numSum = 0
+        for e in final {
+            let sign = e[0] == "-" ? -1 : 1
+            if e[e.count - 1] == "x" {
+                let num = String(e[1..<e.count - 1])
+                xLeft += sign * Int(num.isEmpty ? "1" : num)!
+            } else {
+                numSum += sign * Int(String(e[1..<e.count]))!
+            }
+        }
+        if xLeft == 0 && numSum == 0 {
+            return "Infinite solutions"
+        } else if (xLeft == 0 && numSum != 0) || numSum % xLeft != 0 {
+            return "No solution"
+        } else {
+            return "x=\(-numSum / xLeft)"
+        }
+         */
+        var factor = 0; var val = 0
+        var index = 0; let n = equation.count; var sign1 = 1
+        let chars = Array(equation)
+        while index < n {
+            // 等号后面全部乘以负一
+            if chars[index] == "=" {
+                sign1 = -1
+                index += 1
+                continue
+            }
+            // 全部移到等号左边的符号
+            var sign2 = sign1
+            var number = 0
+            // number是否有效
+            var valid = false
+            // 碰到"-"或者"+"
+            if chars[index] == "-" || chars[index] == "+" {
+                sign2 = (chars[index] == "-") ? -sign1 : sign1
+                index += 1
+            }
+            // 遍历数字
+            while index < n && chars[index].isNumber {
+                number = number * 10 + Int(String(chars[index]))!
+                index += 1
+                valid = true
+            }
+            // 数字后面跟着x
+            if index < n && chars[index] == "x" {
+                factor += valid ? sign2 * number : sign2
+                index += 1
+            } else {
+                val += sign2 * number
+            }
+        }
+        if factor == 0 {
+            return val == 0 ? "Infinite solutions" : "No solution"
+        }
+        return "x=\(-val / factor)"
+    }
+    
+    // MARK: - 38. 外观数列（中等）
+    static func countAndSay(_ n: Int) -> String {
+        var cur = n - 1
+        var ans = "1"
+        while cur > 0 {
+            let len = ans.count
+            let chars = Array(ans)
+            var numCount = 1
+            var curStr = ""
+            for i in 0..<len {
+                if i < len - 1, chars[i] == chars[i+1] {
+                    numCount += 1
+                } else {
+                    curStr += "\(numCount)\(chars[i])"
+                    numCount = 1
+                }
+            }
+            ans = curStr
+            cur -= 1
+        }
+        return ans
+    }
+    
+    // MARK: - 443. 压缩字符串（中等）
+    static func compress(_ chars: inout [Character]) -> Int {
+        // 双指针
+        let n = chars.count
+        // 返回书序新长度
+        var j = 0
+        // 重复字符的左边下标
+        var left = 0
+        for i in 0..<n {
+            // 遍历到字符串末尾，或者当前字符和下一个字符不同时
+            if i == n - 1 || chars[i] != chars[i + 1] {
+                // 插入当前字符
+                chars[j] = chars[i]
+                // 计算重复字符个数
+                let num = i - left + 1
+                j += 1
+                if num > 1 {
+                    let str = "\(num)"
+                    for k in 0..<str.count {
+                        chars[j] = Array(str)[k]
+                        j += 1
+                    }
+                }
+                left = i + 1
+            }
+        }
+        return j
+    }
+    
+    // MARK: - 8. 字符串转换整数 (atoi)
+    static func myAtoi(_ s: String) -> Int {
+        let chars = Array(s)
+        let len = chars.count
+        var i = 0; var sign = 1; var ans = 0
+        // 去掉前导空格
+        while i < len, chars[i] == " " {
+            i += 1
+        }
+        if i >= len { return 0 }
+        // 判断负号
+        if chars[i] == "-" {
+            sign = -1
+        }
+        // 有+或-向后移动一位
+        if chars[i] == "+" || chars[i] == "-" {
+            i += 1
+        }
+        // 碰到不是数字的就终止
+        while i < len, chars[i].isNumber {
+            let num = Int(String(chars[i]))!
+            if sign == 1 && (Int(Int32.max) - num) / 10 < ans {
+                return Int(Int32.max)
+            } else if sign == -1 && (Int(Int32.min) + num) / 10 > -ans {
+                return Int(Int32.min)
+            }
+            ans = ans * 10 + num
+            i += 1
+        }
+        return sign * ans
+    }
+    
+    // MARK: - 13. 罗马数字转整数
+    static func romanToInt(_ s: String) -> Int {
+        /*
+        let romanIntMap: [Character : Int] = ["I" : 1,
+                                              "V" : 5,
+                                              "X" : 10,
+                                              "L" : 50,
+                                              "C" : 100,
+                                              "D" : 500,
+                                              "M" : 1000]
+        var index = s.startIndex
+        var result = 0
+        while index != s.endIndex {
+            let str = s[index]
+            let nextIndex = s.index(after: index)
+            if nextIndex != s.endIndex {
+                let nextStr = s[nextIndex]
+                if str == "I" && (nextStr == "V" || nextStr == "X") {
+                    result += romanIntMap[nextStr]! - 1
+                    index = s.index(after: nextIndex)
+                } else if str == "X" && (nextStr == "L" || nextStr == "C") {
+                    result += romanIntMap[nextStr]! - 10
+                    index = s.index(after: nextIndex)
+                } else if str == "C" && (nextStr == "D" || nextStr == "M") {
+                    result += romanIntMap[nextStr]! - 100
+                    index = s.index(after: nextIndex)
+                } else {
+                    result += romanIntMap[str]!
+                    index = nextIndex
+                }
+            } else {
+                result += romanIntMap[str]!
+                index = nextIndex
+            }
+        }
+        return result
+         */
+        let romanIntMap: [Character : Int] = ["I" : 1,
+                                              "V" : 5,
+                                              "X" : 10,
+                                              "L" : 50,
+                                              "C" : 100,
+                                              "D" : 500,
+                                              "M" : 1000]
+        let chars = Array(s)
+        let len = chars.count
+        var ans = 0
+        for i in 0..<len {
+            let value = romanIntMap[chars[i]]!
+            if i < len - 1 && value < romanIntMap[chars[i + 1]]! {
+                ans -= value
+            } else {
+                ans += value
+            }
+        }
+        return ans
+    }
+    
+    // MARK: - 12. 整数转罗马数字（中等）
+    static func intToRoman(_ num: Int) -> String {
+        let arr = [(1000, "M"),
+                   (900, "CM"),
+                   (500, "D"),
+                   (400, "CD"),
+                   (100, "C"),
+                   (90, "XC"),
+                   (50, "L"),
+                   (40, "XL"),
+                   (10, "X"),
+                   (9, "IX"),
+                   (5, "V"),
+                   (4, "IV"),
+                   (1, "I")]
+        var ans = ""
+        var num = num
+        for (key, value) in arr {
+            while num >= key {
+                num -= key
+                ans += value
+            }
+            if num == 0 {
+                break
+            }
+        }
+        
+        return ans
+    }
+    
+    // MARK: - 165. 比较版本号（中等）
+    static func compareVersion(_ version1: String, _ version2: String) -> Int {
+        // 分隔成数组
+        /*
+        let version1Nums = version1.components(separatedBy: ".")
+        let version2Nums = version2.components(separatedBy: ".")
+        for i in 0..<max(version1Nums.count, version2Nums.count) {
+            var v1 = "0"
+            if i < version1Nums.count {
+                v1 = version1Nums[i]
+            }
+            while v1.count > 1, v1.hasPrefix("0") {
+                v1.removeFirst()
+            }
+            var v2 = "0"
+            if i < version2Nums.count {
+                v2 = version2Nums[i]
+            }
+            while v2.count > 1, v2.hasPrefix("0") {
+                v2.removeFirst()
+            }
+            if Int(v1)! > Int(v2)! {
+                return 1
+            } else if Int(v1)! < Int(v2)! {
+                return -1
+            }
+        }
+        return 0
+         */
+        
+        // 双指针
+        var i = 0
+        var j = 0
+        let chars1 = Array(version1)
+        let n = chars1.count
+        let chars2 = Array(version2)
+        let m = chars2.count
+        while i < n || j < m {
+            var x = 0
+            while i < n, chars1[i] != "." {
+                x = x * 10 + Int(String(chars1[i]))!
+                i += 1
+            }
+            i += 1
+            var y = 0
+            while j < m, chars2[j] != "." {
+                y = y * 10 + Int(String(chars2[j]))!
+                j += 1
+            }
+            j += 1
+            if x != y {
+                return x > y ? 1 : -1
+            }
+        }
+        return 0
+    }
+    
+    // MARK: - 481. 神奇字符串（中等）
+    static func magicalString(_ n: Int) -> Int {
+        if n <= 3 { return 1 }
+        let str = "122"
+        var i = 2
+        var chars = Array(str)
+        var len = chars.count
+        while len < n {
+            let lastChar = chars[len - 1]
+            if chars[i] == "1" {
+                if lastChar == "1" {
+                    chars.append("2")
+                } else {
+                    chars.append("1")
+                }
+                len += 1
+            } else {
+                if lastChar == "1" {
+                    chars.append(contentsOf: [Character("2"), Character("2")])
+                } else {
+                    chars.append(contentsOf: [Character("1"), Character("1")])
+                }
+                len += 2
+            }
+            i += 1
+        }
+        var ans = 0
+        for i in 0..<n {
+            if chars[i] == "1" {
+                ans += 1
+            }
+        }
+        return ans
+    }
+    
+    // MARK: - 392. 判断子序列
+    static func isSubsequence(_ s: String, _ t: String) -> Bool {
+        // 双指针
+        /*
+        var i = 0
+        var j = 0
+        let sChars = Array(s)
+        let tChars = Array(t)
+        let n = sChars.count
+        let m = tChars.count
+        while i < n && j < m {
+            if sChars[i] == tChars[j] {
+                i += 1
+            }
+            j += 1
+        }
+        return i == n
+        */
+        // 动态规划
+        let tChars = Array(t); let sChars = Array(s)
+        let sLen = s.count; let tLen = t.count
+        var dp = [[Int]](repeating: [Int](repeating: 0, count: 26), count: tLen + 1)
+        for i in 0..<26 {
+            dp[tLen][i] = tLen
+        }
+        for i in (0..<tLen).reversed() {
+            for j in 0..<26 {
+                let aAscii = Int(Character("a").asciiValue!)
+                if tChars[i] == Character(UnicodeScalar(aAscii + j)!) {
+                    dp[i][j] = i
+                } else {
+                    dp[i][j] = dp[i + 1][j]
+                }
+            }
+        }
+        var add = 0
+        for i in 0..<sLen {
+            let aAscii = Int(Character("a").asciiValue!)
+            let sAscii = Int(sChars[i].asciiValue!)
+            if dp[add][sAscii - aAscii] == tLen {
+                return false
+            }
+            add = dp[add][sAscii - aAscii] + 1
+        }
+        return true
+    }
+    
+    // MARK: - 524. 通过删除字母匹配到字典里最长单词（中等）
+    static func findLongestWord(_ s: String, _ dictionary: [String]) -> String {
+        // 双指针
+        let sChars = Array(s)
+        let sLen = sChars.count
+        var ans = ""
+        for str in dictionary {
+            let chars = Array(str)
+            var i = 0; var j = 0
+            let dLen = chars.count
+            while i < sLen && j < dLen {
+                if sChars[i] == chars[j] {
+                    j += 1
+                }
+                i += 1
+            }
+            if j == dLen {
+                if dLen > ans.count || (dLen == ans.count && str < ans) {
+                    ans = str
+                }
+            }
+        }
+        return ans
+    }
+    
+    // MARK: - 521. 最长特殊序列 Ⅰ
+    static func findLUSlength(_ a: String, _ b: String) -> Int {
+        let aLen = a.count; let bLen = b.count
+        if a == b {
+            return -1
+        }
+        return max(aLen, bLen)
+    }
+    
+    // MARK: - 522. 最长特殊序列 II（中等）
+    static func findLUSlength(_ strs: [String]) -> Int {
+        func isSubsequence(_ s: String, _ t: String) -> Bool {
+            var i = 0
+            var j = 0
+            let sChars = Array(s)
+            let tChars = Array(t)
+            let n = sChars.count
+            let m = tChars.count
+            while i < n && j < m {
+                if sChars[i] == tChars[j] {
+                    i += 1
+                }
+                j += 1
+            }
+            return i == n
+        }
+        let len = strs.count
+        var ans = -1
+        for i in 0..<len {
+            var isCheck = true
+            for j in 0..<len {
+                if i != j, isSubsequence(strs[i], strs[j]) {
+                    isCheck = false
+                    break
+                }
+            }
+            if isCheck {
+                ans = max(ans, strs[i].count)
+            }
+        }
+        return ans
+    }
+    
+    // MARK: - 66. 加一
+    static func plusOne(_ digits: [Int]) -> [Int] {
+        var ans = digits
+        let len = digits.count
+        var i = len - 1; var inc = 1;
+        while i >= 0 {
+            let num = ans[i]
+            let res = num + inc
+            if res >= 10 {
+                inc = 1
+                ans[i] = res - 10
+            } else {
+                inc = 0
+                ans[i] = res
+            }
+            i -= 1
+        }
+        if inc == 1 {
+            ans.insert(1, at: 0)
+        }
+        return ans
+    }
+    
+    // MARK: - 67. 二进制求和
+    /*
+     给定两个二进制字符串a和b，将它们的总和作为二进制字符串返回。
+     */
+    static func addBinary(_ a: String, _ b: String) -> String {
+        let aChars = a.map { $0 }
+        let bChars = b.map { $0 }
+        var i = aChars.count - 1
+        var j = bChars.count - 1
+        var increment = 0
+        var res = [Character]()
+        while i >= 0 || j >= 0 {
+            var aNum = 0
+            if i >= 0 {
+                aNum = Int(String(aChars[i]))!
+            }
+            var bNum = 0
+            if j >= 0 {
+                bNum = Int(String(bChars[j]))!
+            }
+            let sum = aNum + bNum + increment
+            if sum >= 2 {
+                increment = 1
+            } else {
+                increment = 0
+            }
+            res.insert(Character("\(sum % 2)"), at: 0)
+            i -= 1
+            j -= 1
+        }
+        
+        if increment == 1 {
+            res.insert("1", at: 0)
+        }
+        
+        return String(res)
+    }
+    
+    // MARK: - 415. 字符串相加
+    static func addStrings(_ num1: String, _ num2: String) -> String {
+        let num1Chars = Array(num1); let num2Chars = Array(num2)
+        var i = num1.count - 1; var j = num2.count - 1; var inc = 0
+        var ans = ""
+        while i >= 0 || j >= 0 || inc != 0 {
+            let x = i >= 0 ? Int(String(num1Chars[i]))! : 0
+            let y = j >= 0 ? Int(String(num2Chars[j]))! : 0
+            let res = x + y + inc
+            inc = res / 10
+            ans.append("\(res % 10)")
+            i -= 1
+            j -= 1
+        }
+        return String(ans.reversed())
+    }
+    
+    // 43. 字符串相乘（中等）
+    static func multiply(_ num1: String, _ num2: String) -> String {
+        // 加法运算
+        /*
+        func addStrings(_ num1: String, _ num2: String) -> String {
+            let num1Chars = Array(num1); let num2Chars = Array(num2)
+            var i = num1.count - 1; var j = num2.count - 1; var inc = 0
+            var ans = ""
+            while i >= 0 || j >= 0 || inc != 0 {
+                let x = i >= 0 ? Int(String(num1Chars[i]))! : 0
+                let y = j >= 0 ? Int(String(num2Chars[j]))! : 0
+                let res = x + y + inc
+                inc = res / 10
+                ans.append("\(res % 10)")
+                i -= 1
+                j -= 1
+            }
+            return String(ans.reversed())
+        }
+        if num1 == "0" || num2 == "0" {
+            return "0"
+        }
+        let num1Chars = Array(num1); let num2Chars = Array(num2)
+        let len1 = num1.count; let len2 = num2.count
+        var ans = ""
+        for i in (0..<len1).reversed() {
+            var cur = ""
+            // 后面补零
+            for j in 0..<len1-1-i {
+                cur.append("0")
+            }
+            let x = Int(String(num1Chars[i]))!
+            var inc = 0
+            for j in (0..<len2).reversed() {
+                let y = Int(String(num2Chars[j]))!
+                let res = x * y + inc
+                cur.append("\(res % 10)")
+                inc = res / 10
+            }
+            if inc != 0 {
+                cur.append("\(inc)")
+            }
+            print(String(cur.reversed()))
+            ans = addStrings(ans, String(cur.reversed()))
+        }
+        return ans
+         */
+        
+        // 乘法运算
+        if num1 == "0" || num2 == "0" {
+            return "0"
+        }
+        let num1Chars = Array(num1); let num2Chars = Array(num2)
+        let len1 = num1.count; let len2 = num2.count
+        // 存储字符串的数字数组
+        var arr = [Int](repeating: 0, count: len1 + len2)
+        for i in (0..<len1).reversed() {
+            let x = Int(String(num1Chars[i]))!
+            for j in (0..<len2).reversed() {
+                let y = Int(String(num2Chars[j]))!
+                arr[i + j + 1] += x * y
+            }
+        }
+        
+        for i in (1..<len1+len2).reversed() {
+            arr[i - 1] += arr[i] / 10
+            arr[i] = arr[i] % 10
+        }
+        var index = arr[0] == 0 ? 1 : 0
+        var ans = ""
+        while index < len1 + len2 {
+            ans.append("\(arr[index])")
+            index += 1
+        }
+        return ans
+    }
+    
+    // MARK: - 306. 累加数（中等）
+//    static func isAdditiveNumber(_ num: String) -> Bool {
+//
+//    }
+    
+    // MARK: - 482. 密钥格式化
+    static func licenseKeyFormatting(_ s: String, _ k: Int) -> String {
+        let s = s.uppercased()
+        let arr = s.components(separatedBy: "-")
+        let chars = Array(arr.reduce("", { $0 + $1 }))
+        let len = chars.count
+        var firstStrCount = len % k
+        if firstStrCount == 0, len >= k {
+            firstStrCount = k
+        }
+        var ans = String(chars[0..<firstStrCount])
+        var i = firstStrCount
+        while i < len {
+            ans += "-\(String(chars[i..<i + k]))"
+            i += k
+        }
+        return ans
+    }
+    
+    // MARK: - 5. 最长回文子串（中等）
+    static func longestPalindrome(_ s: String) -> String {
+        /*
+         // 第一次想到的解法
+        func findLongestPalindrome(_ chars: [Character], centerIndex: Int) -> String {
+            let len = chars.count
+            var i = centerIndex
+            while i > 0, chars[i - 1] == chars[centerIndex] {
+                i -= 1
+            }
+            var j = centerIndex
+            while j < len - 1, chars[j + 1] == chars[centerIndex] {
+                j += 1
+            }
+            while i > 0 && j < len - 1 {
+                if chars[i - 1] == chars[j + 1] {
+                    i -= 1
+                    j += 1
+                } else {
+                    break
+                }
+            }
+            return String(chars[i...j])
+        }
+        // 中心扩展法
+        func expandAroundCenter(_ chars: [Character], left: Int, right: Int) -> Int {
+            var left = left; var right = right
+            while left >= 0 && right < chars.count && chars[left] == chars[right] {
+                left -= 1
+                right += 1
+            }
+            return right - left - 1
+        }
+        
+        let len = s.count
+        let chars = Array(s)
+        var maxLen = 0
+        var start = 0; var end = 0
+        for i in 0..<len {
+            let len1 = expandAroundCenter(chars, left: i, right: i)
+            let len2 = expandAroundCenter(chars, left: i, right: i + 1)
+            let curLen = max(len1, len2)
+            if curLen > maxLen {
+                maxLen = curLen
+                start = i - (curLen - 1) / 2
+                end = i + curLen / 2
+            }
+        }
+        return String(chars[start...end])
+         */
+        // 动态规划
+        let len = s.count
+        if len < 2 {
+            return s
+        }
+        let chars = Array(s)
+        // 最短回文子串长度为1，单个字母
+        var maxLen = 1; var start = 0
+        // dp代表i...j范围的子串是否为回文子串
+        var dp = [[Bool]](repeating: [Bool](repeating: false, count: len), count: len)
+        // 单个字符为回文子串
+        for i in 0..<len {
+            dp[i][i] = true
+        }
+        for j in 1..<len {
+            for i in 0..<j {
+                if chars[i] != chars[j] {
+                    dp[i][j] = false
+                } else {
+                    if j - i < 3 {
+                        dp[i][j] = true
+                    } else {
+                        dp[i][j] = dp[i+1][j-1]
+                    }
+                }
+                if dp[i][j] && j - i + 1 > maxLen {
+                    maxLen = j - i + 1
+                    start = i
+                }
+            }
+        }
+        return String(chars[start..<start+maxLen])
+    }
 }

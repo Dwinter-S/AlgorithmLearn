@@ -63,54 +63,6 @@ class ALArray {
         return true
     }
     
-    /*
-     Roman numerals are represented by seven different symbols: I, V, X, L, C, D and M.
-
-     Symbol       Value
-     I             1
-     V             5
-     X             10
-     L             50
-     C             100
-     D             500
-     M             1000
-     */
-    static func romanToInt(_ s: String) -> Int {
-        let romanIntMap: [Character : Int] = ["I" : 1,
-                                              "V" : 5,
-                                              "X" : 10,
-                                              "L" : 50,
-                                              "C" : 100,
-                                              "D" : 500,
-                                              "M" : 1000]
-        var index = s.startIndex
-        var result = 0
-        while index != s.endIndex {
-            let str = s[index]
-            let nextIndex = s.index(after: index)
-            if nextIndex != s.endIndex {
-                let nextStr = s[nextIndex]
-                if str == "I" && (nextStr == "V" || nextStr == "X") {
-                    result += romanIntMap[nextStr]! - 1
-                    index = s.index(after: nextIndex)
-                } else if str == "X" && (nextStr == "L" || nextStr == "C") {
-                    result += romanIntMap[nextStr]! - 10
-                    index = s.index(after: nextIndex)
-                } else if str == "C" && (nextStr == "D" || nextStr == "M") {
-                    result += romanIntMap[nextStr]! - 100
-                    index = s.index(after: nextIndex)
-                } else {
-                    result += romanIntMap[str]!
-                    index = nextIndex
-                }
-            } else {
-                result += romanIntMap[str]!
-                index = nextIndex
-            }
-        }
-        return result
-    }
-    
     // MARK: - 有效括号
     /*
      给定一个s仅包含字符'('、')'、'{'、和的字符串'}'，确定输入字符串是否有效。'['']'
@@ -256,72 +208,6 @@ class ALArray {
             res += 1
         }
         return res
-    }
-    
-    // MARK: - 加一
-    /*
-     你得到一个表示为整数数组的大整数digits，其中每个digits[i]都是整数的数字。数字按从左到右的顺序从最高有效到最低有效排序。大整数不包含任何前导的。ith0
-     将大整数加 1 并返回结果数组。
-     */
-    static func plusOne(_ digits: [Int]) -> [Int] {
-        var newDigits = digits
-        var i = digits.count - 1
-        var increment = 1
-        while i >= 0 {
-            let digit = digits[i]
-            let resultDigit = digit + increment
-            if resultDigit >= 10 {
-                increment = 1
-                newDigits[i] = 0
-            } else {
-                increment = 0
-                newDigits[i] = resultDigit
-                break
-            }
-            i -= 1
-        }
-        if increment == 1 {
-            newDigits.insert(1, at: 0)
-        }
-        return newDigits
-    }
-    
-    // MARK: - 添加二进制
-    /*
-     给定两个二进制字符串a和b，将它们的总和作为二进制字符串返回。
-     */
-    static func addBinary(_ a: String, _ b: String) -> String {
-        let aChars = a.map { $0 }
-        let bChars = b.map { $0 }
-        var i = aChars.count - 1
-        var j = bChars.count - 1
-        var increment = 0
-        var res = [Character]()
-        while i >= 0 || j >= 0 {
-            var aNum = 0
-            if i >= 0 {
-                aNum = Int(String(aChars[i]))!
-            }
-            var bNum = 0
-            if j >= 0 {
-                bNum = Int(String(bChars[j]))!
-            }
-            let sum = aNum + bNum + increment
-            if sum >= 2 {
-                increment = 1
-            } else {
-                increment = 0
-            }
-            res.insert(Character("\(sum % 2)"), at: 0)
-            i -= 1
-            j -= 1
-        }
-        
-        if increment == 1 {
-            res.insert("1", at: 0)
-        }
-        
-        return String(res)
     }
     
     // MARK: - Sqrt(x)
@@ -1251,22 +1137,53 @@ class ALArray {
         var preSums: [Int]
         let nums: [Int]
         init(_ nums: [Int]) {
-            let count = nums.count
-            preSums = [Int](repeating: 0, count: count)
             self.nums = nums
-            var sum = 0
+            let count = nums.count
+            preSums = [Int](repeating: 0, count: count + 1)
             for i in 0..<count {
-                sum += nums[i]
-                preSums[i] = sum
+                preSums[i + 1] = preSums[i] + nums[i]
             }
         }
         
         func sumRange(_ left: Int, _ right: Int) -> Int {
-            if left == 0 {
-                return preSums[right]
-            }
-            return preSums[right] - preSums[left - 1]
+            return preSums[right + 1] - preSums[left]
         }
         
+    }
+    
+    // MARK: - 304. 二维区域和检索 - 矩阵不可变（中等）
+    class NumMatrix {
+        var preSumMatrix: [[Int]]
+        init(_ matrix: [[Int]]) {
+            let r = matrix.count
+            let c = matrix[0].count
+            preSumMatrix = [[Int]](repeating: [Int](repeating: 0, count: c + 1), count: r + 1)
+            for i in 0..<r {
+                for j in 0..<c {
+                    preSumMatrix[i + 1][j + 1] = preSumMatrix[i][j + 1] + preSumMatrix[i + 1][j] - preSumMatrix[i][j] + matrix[i][j]
+                }
+            }
+        }
+        
+        func sumRegion(_ row1: Int, _ col1: Int, _ row2: Int, _ col2: Int) -> Int {
+            return preSumMatrix[row2 + 1][col2 + 1] - preSumMatrix[row1][col2 + 1] - preSumMatrix[row2 + 1][col1] + preSumMatrix[row1][col1]
+        }
+    }
+    
+    // MARK: - 238. 除自身以外数组的乘积
+    static func productExceptSelf(_ nums: [Int]) -> [Int] {
+        // ans[i]代表i下标元素左边所有元素的乘积
+        let len = nums.count
+        var ans = [Int](repeating: 1, count: len)
+        for i in 1..<len {
+            ans[i] = ans[i-1] * nums[i-1]
+        }
+        // r代表i下标元素右边所有元素的乘积
+        var r = 1
+        for i in (0..<len).reversed() {
+            ans[i] *= r
+            r *= nums[i]
+        }
+        return ans
     }
 }
