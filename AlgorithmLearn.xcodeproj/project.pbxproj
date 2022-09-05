@@ -36,6 +36,7 @@
 		9A629AED289B5A880080FAB8 /* DivideAndConquer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A629AEC289B5A880080FAB8 /* DivideAndConquer.swift */; };
 		9A629AF1289B5AC90080FAB8 /* Enumeration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A629AF0289B5AC90080FAB8 /* Enumeration.swift */; };
 		9A629AF3289B5B580080FAB8 /* Iterator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A629AF2289B5B580080FAB8 /* Iterator.swift */; };
+		9A62C77128C5851400A2D3B3 /* DP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A62C77028C5851400A2D3B3 /* DP.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -89,6 +90,7 @@
 		9A629AEC289B5A880080FAB8 /* DivideAndConquer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DivideAndConquer.swift; sourceTree = "<group>"; };
 		9A629AF0289B5AC90080FAB8 /* Enumeration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enumeration.swift; sourceTree = "<group>"; };
 		9A629AF2289B5B580080FAB8 /* Iterator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Iterator.swift; sourceTree = "<group>"; };
+		9A62C77028C5851400A2D3B3 /* DP.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DP.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -153,6 +155,7 @@
 				9A629AD4289B57380080FAB8 /* Greedy.swift */,
 				9A629AD6289B57440080FAB8 /* BinarySearch.swift */,
 				9A629ADA289B575A0080FAB8 /* Tree.swift */,
+				9A62C77028C5851400A2D3B3 /* DP.swift */,
 				9A629AE0289B57A40080FAB8 /* Graph.swift */,
 				9A629AE4289B59F40080FAB8 /* PrefixSum.swift */,
 				9A629AE2289B59C50080FAB8 /* Matrix.swift */,
@@ -349,6 +352,7 @@
 				9A629AF1289B5AC90080FAB8 /* Enumeration.swift in Sources */,
 				3A696E7B288925EF0062C88C /* SceneDelegate.swift in Sources */,
 				9A629AD5289B57380080FAB8 /* Greedy.swift in Sources */,
+				9A62C77128C5851400A2D3B3 /* DP.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
