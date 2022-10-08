@@ -95,7 +95,7 @@ class LinkedList {
         node?.next = node?.next?.next
     }
     
-    // MARK: - 19. 删除链表的倒数第 N 个结点 (中等)
+    // MARK: - 19. 删除链表的倒数第 N 个结点 (中等 Hot 100)
     /*
      给你一个链表，删除链表的倒数第 n 个结点，并且返回链表的头结点。
      
@@ -453,7 +453,7 @@ class LinkedList {
         // 不反转解法：将节点放入栈中
     }
     
-    // MARK: - 21. 合并两个有序链表
+    // MARK: - 21. 合并两个有序链表（简单 Hot 100）
     /*
      将两个升序链表合并为一个新的 升序 链表并返回。新链表是通过拼接给定的两个链表的所有节点组成的。
      
@@ -498,23 +498,25 @@ class LinkedList {
         }
         return dummy?.next
         
-//        guard let l1 = list1 else {
-//            return l2
-//        }
-//
-//        guard let l2 = list2 else {
-//            return l1
-//        }
-//        var mergedList: ListNode
-//        if l1.val < l2.val {
-//            mergedList = l1
-//            mergedList.next = mergeTwoLists(l1.next, l2)
-//        } else {
-//            mergedList = l2
-//            mergedList.next = mergeTwoLists(l1, l2.next)
-//        }
-//
-//        return mergedList
+        // 递归
+        /*
+        guard let l1 = list1 else {
+            return l2
+        }
+
+        guard let l2 = list2 else {
+            return l1
+        }
+        var mergedList: ListNode
+        if l1.val < l2.val {
+            mergedList = l1
+            mergedList.next = mergeTwoLists(l1.next, l2)
+        } else {
+            mergedList = l2
+            mergedList.next = mergeTwoLists(l1, l2.next)
+        }
+        return mergedList
+         */
     }
     
     // MARK: 23. 合并K个升序链表（困难）

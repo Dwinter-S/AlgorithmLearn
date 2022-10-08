@@ -21,7 +21,7 @@ class ViewController: UIViewController {
 //        let root = TreeNode(arr: [1,3,2,5,3,nil,9])
         var test = [0,0,1,1,1,1,2,3,3]
         var nums: [Character] = ["a","b","b","b","b","b","b","b","b","b","b","b","b"]
-        print(DP.minPathSum([[1,2,5],[3,2,1]]))
+        print(Backtracking.letterCombinations("23"))
 //        let item = AVPlayerItem(url: URL(string: "https://static.ieltsbro.com/uploads/app_oral_practice_comment/audio_record/1660272310666.mp3")!)
     
         
