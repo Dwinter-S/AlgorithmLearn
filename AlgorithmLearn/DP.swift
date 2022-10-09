@@ -12,18 +12,18 @@ class DP {
     static func maxSubArray(_ nums: [Int]) -> Int {
         // 标准dp
         /*
-        let len = nums.count
-        // dp[i]表示0...i范围内的最大子数组和
-        var dp = [Int](repeating: 0, count: len)
-        dp[0] = nums[0]
-        for i in 1..<len {
-            if dp[i - 1] > 0 {
-                dp[i] = dp[i - 1] + nums[i]
-            } else {
-                dp[i] = nums[i]
-            }
-        }
-        return dp.max()!
+         let len = nums.count
+         // dp[i]表示0...i范围内的最大子数组和
+         var dp = [Int](repeating: 0, count: len)
+         dp[0] = nums[0]
+         for i in 1..<len {
+         if dp[i - 1] > 0 {
+         dp[i] = dp[i - 1] + nums[i]
+         } else {
+         dp[i] = nums[i]
+         }
+         }
+         return dp.max()!
          */
         
         // dp空间优化
@@ -41,32 +41,32 @@ class DP {
     static func uniquePaths(_ m: Int, _ n: Int) -> Int {
         // 标准dp
         /*
-        var dp = [[Int]](repeating: [Int](repeating: 0, count: n), count: m)
-        for i in 0..<m {
-            dp[i][0] = 1
-        }
-        for i in 0..<n {
-            dp[0][i] = 1
-        }
-        for i in 1..<m {
-            for j in 1..<n {
-                dp[i][j] = dp[i-1][j] + dp[i][j-1]
-            }
-        }
-        return dp[m - 1][n - 1]
+         var dp = [[Int]](repeating: [Int](repeating: 0, count: n), count: m)
+         for i in 0..<m {
+         dp[i][0] = 1
+         }
+         for i in 0..<n {
+         dp[0][i] = 1
+         }
+         for i in 1..<m {
+         for j in 1..<n {
+         dp[i][j] = dp[i-1][j] + dp[i][j-1]
+         }
+         }
+         return dp[m - 1][n - 1]
          */
         
         // dp空间优化
         /*
-        var cur = [Int](repeating: 1, count: n)
-        var pre = [Int](repeating: 1, count: n)
-        for i in 1..<m {
-            for j in 1..<n {
-                cur[j] = pre[j] + cur[j-1]
-            }
-            pre = cur
-        }
-        return pre[n-1]
+         var cur = [Int](repeating: 1, count: n)
+         var pre = [Int](repeating: 1, count: n)
+         for i in 1..<m {
+         for j in 1..<n {
+         cur[j] = pre[j] + cur[j-1]
+         }
+         pre = cur
+         }
+         return pre[n-1]
          */
         var cur = [Int](repeating: 1, count: n)
         for i in 1..<m {
@@ -81,22 +81,22 @@ class DP {
     static func minPathSum(_ grid: [[Int]]) -> Int {
         // 标准dp
         /*
-        let row = grid.count
-        let col = grid[0].count
-        var dp = [[Int]](repeating: [Int](repeating: 0, count: col), count: row)
-        dp[0][0] = grid[0][0]
-        for i in 1..<row {
-            dp[i][0] = dp[i-1][0] + grid[i][0]
-        }
-        for j in 1..<col {
-            dp[0][j] = dp[0][j-1] + grid[0][j]
-        }
-        for i in 1..<row {
-            for j in 1..<col {
-                dp[i][j] = min(dp[i-1][j], dp[i][j-1]) + grid[i][j]
-            }
-        }
-        return dp[row-1][col-1]
+         let row = grid.count
+         let col = grid[0].count
+         var dp = [[Int]](repeating: [Int](repeating: 0, count: col), count: row)
+         dp[0][0] = grid[0][0]
+         for i in 1..<row {
+         dp[i][0] = dp[i-1][0] + grid[i][0]
+         }
+         for j in 1..<col {
+         dp[0][j] = dp[0][j-1] + grid[0][j]
+         }
+         for i in 1..<row {
+         for j in 1..<col {
+         dp[i][j] = min(dp[i-1][j], dp[i][j-1]) + grid[i][j]
+         }
+         }
+         return dp[row-1][col-1]
          */
         // 空间优化
         let row = grid.count
@@ -120,14 +120,14 @@ class DP {
     static func climbStairs(_ n: Int) -> Int {
         // dp数组
         /*
-        if n < 3 { return n }
-        var dp = [Int](repeating: 0, count: n)
-        dp[0] = 1
-        dp[1] = 2
-        for i in 2..<n {
-            dp[i] = dp[i-1] + dp[i-2]
-        }
-        return dp[n - 1]
+         if n < 3 { return n }
+         var dp = [Int](repeating: 0, count: n)
+         dp[0] = 1
+         dp[1] = 2
+         for i in 2..<n {
+         dp[i] = dp[i-1] + dp[i-2]
+         }
+         return dp[n - 1]
          */
         
         // 滚动数组优化空间
@@ -205,6 +205,54 @@ class DP {
             }
         }
         return dp[rows-1][cols-1]
+    }
+    
+    // MARK: - 343. 整数拆分（中等）
+    static func integerBreak(_ n: Int) -> Int {
+        var dp = [Int](repeating: 0, count: n + 1)
+        dp[2] = 1
+        for i in 3...n {
+            for j in 2..<i {
+                dp[i] = max(dp[i], max(j * (i - j), j * dp[i - j]))
+            }
+        }
+        return dp[n]
+    }
+    
+    // MARK: - 96. 不同的二叉搜索树（中等）
+    static func numTrees(_ n: Int) -> Int {
+        var dp = Array(repeating: 0, count: n + 1)
+        dp[0] = 1
+        for i in 1...n {
+            for j in  1...i {
+                // dp[i]等于以1到i为根节点二叉搜索树的数量总和,以j为根节点的二叉搜索树的数量等于j-1和i-j个节点组成的数量的乘积
+                dp[i] += dp[j - 1] * dp[i - j]
+            }
+        }
+        return dp[n]
+        
+    }
+    
+    // MARK: - 416. 分割等和子集（中等）
+    func canPartition(_ nums: [Int]) -> Bool {
+        let n = nums.count
+        let maxSum = 100 * n + 1
+        var sum = 0
+        var dp = [Int](repeating: 0, count: maxSum)
+        for num in nums {
+            sum += num
+        }
+        
+        guard sum % 2 == 0 else { return false }
+        for i in 0..<n {
+            var j = sum / 2
+            while j >= nums[i] {
+                dp[j] = max(dp[j], dp[j - nums[i]] + nums[i])
+                j -= 1
+            }
+        }
+        return dp[sum / 2] == sum / 2
+        
     }
 }
 

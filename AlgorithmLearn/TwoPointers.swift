@@ -137,7 +137,7 @@ class TwoPointers {
         return [-1, -1]
     }
     
-    // MARK: - 15. 三数之和 (中等)
+    // MARK: - 15. 三数之和 (中等 Hot 100)
     /*
      给你一个包含 n 个整数的数组 nums，判断 nums 中是否存在三个元素 a，b，c ，使得 a + b + c = 0 ？请你找出所有和为 0 且不重复的三元组。
      注意：答案中不可以包含重复的三元组。
@@ -163,12 +163,14 @@ class TwoPointers {
         let count = sortedNums.count
         var result = [[Int]]()
         for i in 0..<count {
+            // 注意判断重复
             if i > 0, sortedNums[i] == sortedNums[i - 1] {
                 continue
             }
             let firstNum = sortedNums[i]
             let targetNum = -firstNum
             for j in (i + 1)..<count {
+                // 注意判断重复
                 if j > i + 1, sortedNums[j] == sortedNums[j - 1] {
                     continue
                 }
@@ -260,7 +262,7 @@ class TwoPointers {
         return []
     }
     
-    // MAKR: - 11. 盛最多水的容器（中等）
+    // MAKR: - 11. 盛最多水的容器（中等 Hot 100）
     static func maxArea(_ height: [Int]) -> Int {
         var left = 0
         var right = height.count - 1
@@ -532,22 +534,46 @@ class TwoPointers {
         return minLength == Int.max ? 0 : minLength
     }
     
-    // MARK: - 3. 无重复字符的最长子串（中等）
+    // MARK: - 3. 无重复字符的最长子串（中等 Hot 100）
     static func lengthOfLongestSubstring(_ s: String) -> Int {
         let chars = Array(s)
+        let len = chars.count
+        var left = 0; var right = 0
+        // 字符下标字典
+        var dict = [Character : Int]()
         var ans = 0
-        var right = 0
-        var curChars = [Character]()
-        while right < chars.count {
-            let char = chars[right]
-            while curChars.contains(char) {
-                curChars.removeFirst()
+        while right < len {
+            let index = dict[chars[right]]
+            dict[chars[right]] = right
+            if index != nil, index! >= left {
+                left = index! + 1
             }
-            curChars.append(char)
-            ans = max(ans, curChars.count)
+            ans = max(ans, right - left + 1)
             right += 1
         }
         return ans
+        
+        // 使用Set
+        /*
+         let chars = Array(s)
+         let len = chars.count
+         var ans = 0
+         var left = 0
+         var right = 0
+         var curChars = Set<Character>()
+         while left < len {
+             if left != 0 {
+                curChars.remove(chars[left - 1])
+             }
+             while right < len, !curChars.contains(chars[right]) {
+                curChars.insert(chars[right])
+                right += 1
+             }
+             ans = max(ans, right - left)
+             left += 1
+         }
+         return ans
+         */
     }
     
     // MARK: - 438. 找到字符串中所有字母异位词（中等）

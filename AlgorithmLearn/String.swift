@@ -1675,7 +1675,7 @@ class ALString {
         return ans
     }
     
-    // MARK: - 5. 最长回文子串（中等）
+    // MARK: - 5. 最长回文子串（中等 Hot 100）
     static func longestPalindrome(_ s: String) -> String {
         /*
          // 第一次想到的解法
