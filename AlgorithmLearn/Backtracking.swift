@@ -54,6 +54,43 @@ class Backtracking {
     }
 
         
-    
+    // MARK: - 79. 单词搜索（中等 Hot 100）
+    static func exist(_ board: [[Character]], _ word: String) -> Bool {
+        func backtracking(_ board: [[Character]], _ word: [Character], wordIndex: Int, rowIndex: Int, columnIndex: Int, visited: [[Bool]]) -> Bool {
+            let rowCount = board.count
+            let columnCount = board[0].count
+            let curChar = Array(word)[wordIndex]
+            if board[rowIndex][columnIndex] != curChar {
+                return false
+            }
+            if wordIndex == word.count - 1 {
+                return true
+            }
+            var visited = visited
+            visited[rowIndex][columnIndex] = true
+            let directions = [[0, 1], [0, -1], [1, 0], [-1, 0]]
+            for direction in directions {
+                let i = rowIndex + direction[0]
+                let j = columnIndex + direction[1]
+                if i >= 0, i < rowCount, j >= 0, j < columnCount, !visited[i][j] {
+                    if backtracking(board, word, wordIndex: wordIndex + 1, rowIndex: i, columnIndex: j, visited: visited) {
+                        return true
+                    }
+                }
+            }
+            visited[rowIndex][columnIndex] = false
+            return false
+        }
+        let rowCount = board.count
+        let columnCount = board[0].count
+        for i in 0..<rowCount {
+            for j in 0..<columnCount {
+                if backtracking(board, Array(word), wordIndex: 0, rowIndex: i, columnIndex: j, visited: [[Bool]](repeating: [Bool](repeating: false, count: columnCount), count: rowCount)) {
+                    return true
+                }
+            }
+        }
+        return false
+    }
     
 }

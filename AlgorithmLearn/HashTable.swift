@@ -72,4 +72,22 @@ class HashTable {
         }
         return false
     }
+    
+    // MARK: - 128. 最长连续序列（中等 Hot 100）
+    static func longestConsecutive(_ nums: [Int]) -> Int {
+        let set = Set(nums)
+        var ans = 0
+        for num in nums {
+            if !set.contains(num - 1) {
+                var currentNum = num
+                var curCount = 1
+                while set.contains(currentNum + 1) {
+                    currentNum += 1
+                    curCount += 1
+                }
+                ans = max(ans, curCount)
+            }
+        }
+        return ans
+    }
 }

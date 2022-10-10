@@ -615,7 +615,7 @@ class BinarySearch {
         return nums[left]
     }
     
-    // MARK: - 33. 搜索旋转排序数组
+    // MARK: - 33. 搜索旋转排序数组（中等 Hot 100）
     static func search(_ nums: [Int], _ target: Int) -> Int {
         let count = nums.count
         var left = 0
