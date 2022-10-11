@@ -254,5 +254,68 @@ class DP {
         return dp[sum / 2] == sum / 2
         
     }
+    
+    // MARK: - 139. 单词拆分（中等 Hot 100）
+    static func wordBreak(_ s: String, _ wordDict: [String]) -> Bool {
+        // 回朔法，超时了
+        /*
+        func backtracking(_ chars: [Character], _ wordDict: [String], startIndex: Int) -> Bool {
+            for word in wordDict {
+                let targetIndex = startIndex + word.count
+                if targetIndex > chars.count {
+                    continue
+                }
+                let matchWord = String(chars[startIndex..<targetIndex])
+                if word == matchWord {
+                    if startIndex + word.count == chars.count {
+                        return true
+                    } else {
+                        let isMatched = backtracking(chars, wordDict, startIndex: startIndex + word.count)
+                        if isMatched {
+                            return true
+                        }
+                    }
+                }
+            }
+            return false
+        }
+        return backtracking(Array(s), wordDict, startIndex: 0)
+         */
+        
+        // 动态规划
+        // dp表示以[0,n)的子串是否能够被字典中的字符串拼接出。
+        let n = s.count
+        var dp = [Bool](repeating: false, count: n + 1)
+        dp[0] = true
+        let wordSet = Set(wordDict)
+        for i in 1...n {
+            for j in 0..<i {
+                // [0,j)的子串可以拼接出，并且[j,i)的子串包含在字典中，则[0,i)的子串也可以拼接出
+                if dp[j] && wordSet.contains(String(Array(s)[j..<i])) {
+                    dp[i] = true
+                    break
+                }
+            }
+        }
+        
+        return dp[n]
+    }
+
+    // MARK: - 152. 乘积最大子数组（中等 Hot 100）
+    static func maxProduct(_ nums: [Int]) -> Int {
+        // dp[i]表示以下标i结尾的子数组，包含下标i的最大乘积
+        var maxValue = nums[0]
+        var minValue = nums[0]
+        var ans = nums[0]
+        for i in 1..<nums.count {
+            let t = maxValue
+            maxValue = max(max(nums[i], nums[i] * minValue), nums[i] * maxValue)
+            minValue = min(min(nums[i], nums[i] * minValue), nums[i] * t)
+            ans = max(maxValue, ans)
+        }
+        return ans
+    }
+    
+        
 }
 
