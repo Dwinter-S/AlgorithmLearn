@@ -317,5 +317,37 @@ class DP {
     }
     
         
+    // MARK: - 279. 完全平方数（中等 Hot 100）
+    static func numSquares(_ n: Int) -> Int {
+        // dp[i]表示组成i的完全平方数的最小个数
+        var dp = [Int](repeating: 0, count: n + 1)
+        for i in 1...n {
+            var j = 1
+            var minValue = Int.max
+            while j * j <= i {
+                minValue = min(minValue, dp[i - j * j])
+                j += 1
+            }
+            dp[i] = minValue + 1
+        }
+        return dp[n]
+    }
+    
+    // MARK: - 322. 零钱兑换（中等 Hot 100）
+    static func coinChange(_ coins: [Int], _ amount: Int) -> Int {
+        guard amount > 0 else { return 0 }
+        var dp = [Int](repeating: Int.max, count: amount + 1)
+        // 凑成0元需要0个硬币
+        dp[0] = 0
+        for i in 1...amount {
+            for j in 0..<coins.count {
+                if coins[j] <= i, dp[i - coins[j]] != Int.max {
+                    dp[i] = min(dp[i], dp[i - coins[j]] + 1)
+                }
+            }
+        }
+        // dp[amount] == Int.max 代表凑不出amount元
+        return dp[amount] == Int.max ? -1 : dp[amount]
+    }
 }
 
