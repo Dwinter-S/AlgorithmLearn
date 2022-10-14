@@ -350,7 +350,6 @@ class DP {
         return dp[amount] == Int.max ? -1 : dp[amount]
     }
     
-    
     // MARK: - 647. 回文子串（中等 Hot 100）
     static func countSubstrings(_ s: String) -> Int {
         // 中心扩展法
@@ -377,7 +376,43 @@ class DP {
         return ans
         
     }
-
-       
+    
+    // MARK: - 309. 最佳买卖股票时机含冷冻期（中等 Hot 100）
+    static func maxProfit(_ prices: [Int]) -> Int {
+        /*
+         dp[i][j]：表示第i天操作股票后j状态的最大利润
+         dp[i][0]: 第i天持有股票状态的最大利润，如果第i天没有买入股票，则为第i-1天持有股票的最大利润；如果第i天买入股票，则为第i-1天卖出股票没有处于冷冻期状态的最大利润减去股票价格。
+         dp[i][1]: 第i天不持有股票并且处于冷冻期状态的最大利润，即第i天卖出股票，为第i-1天持有股票的最大利润加上卖出股票的价格。
+         dp[i][2]: 第i天不持有股票并且不处于冷冻期状态的最大利润，为第i-1天就不持有股票并且不处于冷冻期状态的最大利润和第i-1天不持有股票并且处于冷冻期状态的最大利润中的较大值。
+         */
+        let n = prices.count
+        var dp = [[Int]](repeating: [Int](repeating: 0, count: 3), count: n)
+        dp[0][0] = -prices[0]
+        for i in 1..<n {
+            dp[i][0] = max(dp[i - 1][0], dp[i - 1][2] - prices[i])
+            dp[i][1] = dp[i - 1][0] + prices[i]
+            dp[i][2] = max(dp[i - 1][1], dp[i - 1][2])
+        }
+        
+        return max(dp[n - 1][1], dp[n - 1][2])
+    }
+    
+    
+    // MARK: - 337. 打家劫舍 III（中等 Hot 100）
+    static func rob(_ root: TreeNode?) -> Int {
+        // 数组第一位表示偷当前节点的最大利润，第二位表示不偷当前节点的最大利润
+        func robTree(_ root: TreeNode?) -> [Int] {
+            guard let root = root else { return [0, 0] }
+            let left = robTree(root.left)
+            let right = robTree(root.right)
+            // 偷当前节点，左右子节点都不能偷
+            let val1 = root.val + left[1] + right[1]
+            // 不偷当前节点，左右节点偷和不偷都可以，取最大值
+            let val2 = max(left[0], left[1]) + max(right[0], right[1])
+            return [val1, val2]
+        }
+        let res = robTree(root)
+        return max(res[0], res[1])
+    }
 }
 
