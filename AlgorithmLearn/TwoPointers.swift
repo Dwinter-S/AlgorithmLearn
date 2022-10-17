@@ -1062,4 +1062,30 @@ class TwoPointers {
         }
         return slow
     }
+    
+    // MARK: - 581. 最短无序连续子数组（中等 Hot 100）
+    func findUnsortedSubarray(_ nums: [Int]) -> Int {
+        let n = nums.count
+        var left = 0
+        var right = -1
+        var max = nums[0]
+        var min = nums[n - 1]
+        /* 双指针
+         左指针从左到右遍历，移动过程中找最大值，如果当前值小于最大值，则至少从最大值下标到当前下标的子数组需要重新排序，遍历结束找到右边界
+         右指针从右到左遍历，移动过程中找最小值，如果当前值大于最小值，则至少从最小值下标到当前下标的子数组需要重新排序，遍历结束找到左边界
+         */
+        for i in 0..<n {
+            if nums[i] < max {
+                right = i
+            } else {
+                max = nums[i]
+            }
+            if nums[n-i-1] > min {
+                left = n-i-1
+            } else {
+                min = nums[n-i-1]
+            }
+        }
+        return right - left + 1
+    }
 }
