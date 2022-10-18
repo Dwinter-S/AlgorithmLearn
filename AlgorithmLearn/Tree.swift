@@ -1579,4 +1579,49 @@ class Tree {
             y?.val = temp
         }
     }
+    
+    // MARK: - 208. 实现 Trie (前缀树)（中等 Hot 100）
+    class Trie {
+        var children: [Trie?]
+        var isEnd: Bool
+        init() {
+            children = [Trie?](repeating: nil, count: 26)
+            isEnd = false
+        }
+        
+        func insert(_ word: String) {
+            let chars = Array(word)
+            var node: Trie = self
+            for char in chars {
+                let index = Int(char.asciiValue! - Character("a").asciiValue!)
+                if node.children[index] == nil {
+                    node.children[index] = Trie()
+                }
+                node = node.children[index]!
+            }
+            node.isEnd = true
+        }
+        
+        func search(_ word: String) -> Bool {
+            let node = searchPreix(word)
+            return node != nil && node!.isEnd
+        }
+        
+        func searchPreix(_ word: String) -> Trie? {
+            let chars = Array(word)
+            var node: Trie = self
+            for char in chars {
+                let index = Int(char.asciiValue! - Character("a").asciiValue!)
+                if node.children[index] == nil {
+                    return nil
+                }
+                node = node.children[index]!
+            }
+            return node
+        }
+        
+        func startsWith(_ prefix: String) -> Bool {
+            return searchPreix(prefix) != nil
+        }
+    }
 }

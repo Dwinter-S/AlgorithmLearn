@@ -414,5 +414,26 @@ class DP {
         let res = robTree(root)
         return max(res[0], res[1])
     }
+    
+    // MARK: - 221. 最大正方形（中等 Hot 100）
+    static func maximalSquare(_ matrix: [[Character]]) -> Int {
+        let row = matrix.count
+        let col = matrix[0].count
+        var dp = [[Int]](repeating: [Int](repeating: 0, count: col), count: row)
+        var maxSide = 0
+        for i in 0..<row {
+            for j in 0..<col {
+                if matrix[i][j] == "1" {
+                    var left = j - 1 >= 0 ? j - 1 : j
+                    var top = i - 1 >= 0 ? i - 1 : i
+                    dp[i][j] = min(min(dp[top][j], dp[i][left]), dp[top][left]) + 1
+                } else {
+                    dp[i][j] = 0
+                }
+                maxSide = max(maxSide, dp[i][j])
+            }
+        }
+        return maxSide * maxSide
+    }
 }
 
