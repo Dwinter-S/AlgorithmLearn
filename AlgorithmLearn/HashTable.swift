@@ -90,4 +90,22 @@ class HashTable {
         }
         return ans
     }
+    
+    // MARK: - 621. 任务调度器（中等 Hot 100）
+    static func leastInterval(_ tasks: [Character], _ n: Int) -> Int {
+        var countArr = [Int](repeating: 0, count: 26)
+        var maxCount = 0
+        var maxExcuate = 0
+        for task in tasks {
+            let index = Int(task.asciiValue! - Character("A").asciiValue!)
+            countArr[index] += 1
+            if countArr[index] > maxExcuate {
+                maxExcuate = countArr[index]
+                maxCount = 1
+            } else if countArr[index] == maxExcuate {
+                maxCount += 1
+            }
+        }
+        return max((maxExcuate - 1) * (n + 1) + maxCount, tasks.count)
+    }
 }

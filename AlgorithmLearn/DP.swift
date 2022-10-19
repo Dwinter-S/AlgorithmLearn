@@ -424,8 +424,8 @@ class DP {
         for i in 0..<row {
             for j in 0..<col {
                 if matrix[i][j] == "1" {
-                    var left = j - 1 >= 0 ? j - 1 : j
-                    var top = i - 1 >= 0 ? i - 1 : i
+                    let left = j - 1 >= 0 ? j - 1 : j
+                    let top = i - 1 >= 0 ? i - 1 : i
                     dp[i][j] = min(min(dp[top][j], dp[i][left]), dp[top][left]) + 1
                 } else {
                     dp[i][j] = 0
@@ -435,5 +435,32 @@ class DP {
         }
         return maxSide * maxSide
     }
+    
+    // MARK: - 494. 目标和（中等 Hot 100）
+    static func findTargetSumWays(_ nums: [Int], _ target: Int) -> Int {
+        /*
+         设负号开头的数字总和为negSum，则正号开头的数字总和为sum-negSum, target = (sum - negSum) - negSum, negSum = (sum - target) / 2，问题转化为从nums中找到和为negSum的组合数。
+         */
+        let n = nums.count
+        var sum = 0
+        for num in nums {
+            sum += num
+        }
+        // 组合数必为正整数
+        guard sum >= target, (sum - target) % 2 == 0 else { return 0 }
+        let negSum = (sum - target) / 2
+        var dp = [Int](repeating: 0, count: negSum + 1)
+        dp[0] = 1
+        for num in nums {
+            if negSum >= num {
+                for j in (num...negSum).reversed() {
+                    dp[j] += dp[j - num]
+                }
+            }
+        }
+        return dp[negSum]
+    }
+    
+    
 }
 
