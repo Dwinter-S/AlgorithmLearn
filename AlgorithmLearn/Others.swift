@@ -124,3 +124,20 @@ class MinStack {
         return minStack.last ?? 0
     }
 }
+
+
+class Others {
+    // MARK: - 406. 根据身高重建队列（中等 Hot 100）
+    static func reconstructQueue(_ people: [[Int]]) -> [[Int]] {
+        // 排序：优先根据身高降序排列，如果身高相同，根据高于自身身高人数升序排列。
+        // 排序后直接遍历插入，身高从大到小插入，后插入的不会影响先插入的。
+        let sortedPeople = people.sorted { val1, val2 in
+            return val1[0] > val2[0] || (val1[0] == val2[0] && val1[1] < val2[1] )
+        }
+        var ans = [[Int]]()
+        for p in sortedPeople {
+            ans.insert(p, at: p[1])
+        }
+        return ans
+    }
+}

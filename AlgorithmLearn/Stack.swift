@@ -26,4 +26,32 @@ class Stack {
         }
         return ans
     }
+    
+    // MARK: - 394. 字符串解码（中等 Hot 100）
+    static func decodeString(_ s: String) -> String {
+        var stack = [Character]()
+        var chars = Array(s)
+        for c in chars {
+            if c != "]" {
+                stack.append(c)
+            } else {
+                var str = ""
+                while !stack.isEmpty, stack.last! != "[" {
+                    str += String(stack.removeLast())
+                }
+                stack.removeLast()
+                var countStr = ""
+                while !stack.isEmpty, stack.last!.isNumber {
+                    countStr += String(stack.removeLast())
+                }
+                let count = Int(String(countStr.reversed()))!
+                let reversedStr = str.reversed()
+                let repeatedStr = Array(repeating: reversedStr, count: count)
+                stack.append(contentsOf: repeatedStr.flatMap({ $0 }))
+            }
+        }
+        
+        return String(stack)
+    }
+    
 }

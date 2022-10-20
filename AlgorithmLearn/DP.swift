@@ -116,7 +116,7 @@ class DP {
         return cur[col-1]
     }
     
-    // MARK: - 70. 爬楼梯
+    // MARK: - 70. 爬楼梯（简单 Hot 100）
     static func climbStairs(_ n: Int) -> Int {
         // dp数组
         /*
