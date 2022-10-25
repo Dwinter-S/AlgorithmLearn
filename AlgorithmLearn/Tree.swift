@@ -729,12 +729,35 @@ class Tree {
     }
     
     
-    // MARK: - 104. 二叉树的最大深度
+    // MARK: - 104. 二叉树的最大深度（简单 Hot 100）
     static func maxDepth(_ root: TreeNode?) -> Int {
+        // 递归（深度优先）
+        /*
         if root == nil { return 0 }
         let leftDepth = maxDepth(root?.left)
         let rightDepth = maxDepth(root?.right)
         return max(leftDepth, rightDepth) + 1
+         */
+        
+        // 层次遍历（广度优先）
+        guard let root = root else { return 0 }
+        var queue = [root]
+        var ans = 0
+        while !queue.isEmpty {
+            var count = queue.count
+            while count > 0 {
+                let cur = queue.removeFirst()
+                if let left = cur.left {
+                    queue.append(left)
+                }
+                if let right = cur.right {
+                    queue.append(right)
+                }
+                count -= 1
+            }
+            ans += 1
+        }
+        return ans
     }
     
     // MARK: - 111. 二叉树的最小深度

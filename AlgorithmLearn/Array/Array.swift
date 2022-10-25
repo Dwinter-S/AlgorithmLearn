@@ -73,36 +73,19 @@ class ALArray {
     static func isValid(_ s: String) -> Bool {
         guard s.count % 2 == 0 else { return false }
         var stack = [Character]()
-        var i = 0
-        let chars = s.map { $0 }
-        while i < s.count {
-            let c = chars[i]
-            if c == "(" || c == "[" || c == "{" {
+        let bracketMap: [Character : Character] = ["(" : ")", "[" : "]", "{" : "}"]
+        for c in Array(s) {
+            if bracketMap.keys.contains(c) {
                 stack.append(c)
             } else {
-                if let preLeft = stack.popLast() {
-                    if (preLeft == "(" && c == ")") || (preLeft == "[" && c == "]") || (preLeft == "{" && c == "}") {
-                        i += 1
-                        continue
-                    } else {
-                        return false
-                    }
+                if let lastLeftBracket = stack.last, bracketMap[lastLeftBracket] == c {
+                    stack.removeLast()
                 } else {
                     return false
                 }
             }
-            i += 1
         }
         return stack.isEmpty
-        
-//        func findLeft(right: Character) -> Character {
-//            if right == ")" {
-//                return "("
-//            } else if right == "]" {
-//                return "["
-//            }
-//            return "{"
-//        }
     }
     
     // MARK: - 从排序数组中删除重复项
