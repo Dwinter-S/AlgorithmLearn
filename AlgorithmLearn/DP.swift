@@ -353,28 +353,22 @@ class DP {
     // MARK: - 647. 回文子串（中等 Hot 100）
     static func countSubstrings(_ s: String) -> Int {
         // 中心扩展法
-        func getCount(_ chars: [Character], _ left: Int, _ right: Int) -> Int {
-            var count = 0
-            var left = left
-            var right = right
-            let rightMax = chars.count
-            while left >= 0, right < rightMax, chars[left] == chars[right] {
-                count += 1
+        let chars = Array(s)
+        func getCount(_ left: Int, _ right: Int) -> Int {
+            var left = left, right = right, count = 0
+            while (left >= 0 && right < s.count && chars[left] == chars[right]) {
                 left -= 1
                 right += 1
+                count += 1
             }
             return count
         }
-        let chars = Array(s)
         var ans = 0
         // 分别计算单个字符为中心和两个字符为中心的回文串，计算总和
         for i in 0..<chars.count {
-            let count1 = getCount(chars, i, i)
-            let count2 = getCount(chars, i, i + 1)
-            ans +=  count1 + count2
+            ans += getCount(i, i) + getCount(i, i + 1)
         }
         return ans
-        
     }
     
     // MARK: - 309. 最佳买卖股票时机含冷冻期（中等 Hot 100）

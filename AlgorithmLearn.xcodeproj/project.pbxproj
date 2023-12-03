@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		266017BA28F54F8A00AEAEAB /* Others.swift in Sources */ = {isa = PBXBuildFile; fileRef = 266017B928F54F8A00AEAEAB /* Others.swift */; };
+		266466312B1CF358000DC93D /* Sort.swift in Sources */ = {isa = PBXBuildFile; fileRef = 266466302B1CF358000DC93D /* Sort.swift */; };
 		3A696E79288925EF0062C88C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A696E78288925EF0062C88C /* AppDelegate.swift */; };
 		3A696E7B288925EF0062C88C /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A696E7A288925EF0062C88C /* SceneDelegate.swift */; };
 		3A696E7D288925EF0062C88C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A696E7C288925EF0062C88C /* ViewController.swift */; };
@@ -59,6 +60,7 @@
 
 /* Begin PBXFileReference section */
 		266017B928F54F8A00AEAEAB /* Others.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Others.swift; sourceTree = "<group>"; };
+		266466302B1CF358000DC93D /* Sort.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sort.swift; sourceTree = "<group>"; };
 		3A696E75288925EF0062C88C /* AlgorithmLearn.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AlgorithmLearn.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3A696E78288925EF0062C88C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3A696E7A288925EF0062C88C /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -168,6 +170,7 @@
 				9A629AF0289B5AC90080FAB8 /* Enumeration.swift */,
 				9A629AF2289B5B580080FAB8 /* Iterator.swift */,
 				266017B928F54F8A00AEAEAB /* Others.swift */,
+				266466302B1CF358000DC93D /* Sort.swift */,
 				3A696E7E288925EF0062C88C /* Main.storyboard */,
 				3A696E81288925F10062C88C /* Assets.xcassets */,
 				3A696E83288925F10062C88C /* LaunchScreen.storyboard */,
@@ -357,6 +360,7 @@
 				3A696E7B288925EF0062C88C /* SceneDelegate.swift in Sources */,
 				9A629AD5289B57380080FAB8 /* Greedy.swift in Sources */,
 				9A62C77128C5851400A2D3B3 /* DP.swift in Sources */,
+				266466312B1CF358000DC93D /* Sort.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
