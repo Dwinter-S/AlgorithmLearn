@@ -37,7 +37,7 @@ class ALArray {
         return []
     }
     
-    // MARK: - 回文整数
+    // MARK: - 9. 回文整数
     /*
      给定一个整数 x，如果 x 是回文整数，则返回 true。
      当一个整数向后读和向前读一样时，它就是一个回文数。
@@ -88,7 +88,7 @@ class ALArray {
         return stack.isEmpty
     }
     
-    // MARK: - 从排序数组中删除重复项
+    // MARK: - 26. 从排序数组中删除重复项
 //    [1, 1, 2]
     static func removeDuplicates(_ nums: inout [Int]) -> Int {
         var slow = 0
@@ -104,7 +104,7 @@ class ALArray {
         return slow
     }
     
-    // MARK: - 移除元素（可以改变元素位置）
+    // MARK: - 27. 移除元素（可以改变元素位置）
     static func removeElement(_ nums: inout [Int], _ val: Int) -> Int {
         /*
         解法1：
