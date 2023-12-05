@@ -54,4 +54,26 @@ class Stack {
         return String(stack)
     }
     
+    // MARK: - 32. 最长有效括号（困难 Hot 100）
+    func longestValidParentheses(_ s: String) -> Int {
+        // 栈
+        var ans = 0
+        var stack = [-1]
+        let chars = Array(s)
+        for i in 0..<chars.count {
+            let char = chars[i]
+            if char == "(" {
+                stack.append(i)
+            } else {
+                stack.removeLast()
+                if stack.isEmpty {
+                    stack.append(i)
+                } else {
+                    ans = max(ans, i - stack.last!)
+                }
+            }
+        }
+        return ans
+    }
+    
 }
