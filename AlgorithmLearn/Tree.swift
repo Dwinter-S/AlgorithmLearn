@@ -1647,4 +1647,18 @@ class Tree {
             return searchPreix(prefix) != nil
         }
     }
+    
+    // MARK: - 124. 二叉树中的最大路径和（困难）
+    func maxPathSum(_ root: TreeNode?) -> Int {
+        var ans = Int.min
+        func maxGain(_ root: TreeNode?) -> Int {
+            guard let root = root else { return 0 }
+            let leftGain = max(maxGain(root.left), 0)
+            let rightGain = max(maxGain(root.right), 0)
+            ans = max(ans, root.val + leftGain + rightGain)
+            return root.val + max(leftGain, rightGain)
+        }
+        maxGain(root)
+        return ans
+    }
 }

@@ -479,5 +479,58 @@ class DP {
         }
         return dp[m][n]
     }
+    
+    // MARK: - 10. 正则表达式匹配（困难 Hot 100）
+    func isMatch(_ s: String, _ p: String) -> Bool {
+        let m = s.count, n = p.count
+        let sChars = Array(s), pChars = Array(p)
+        func matches(i: Int, j: Int) -> Bool {
+            if i == 0 { return false }
+            if pChars[j - 1] == "." { return true }
+            return sChars[i - 1] == pChars[j - 1]
+        }
+        // dp[i][j]表示s[0..<i]和p[0..<j]是否能匹配
+        var dp = Array(repeating: Array(repeating: false, count: n + 1), count: m + 1)
+        // 两个空字符串匹配
+        dp[0][0] = true
+        for i in 0...m {
+            for j in 1...n {
+                if pChars[j - 1] == "*" {
+                    // 匹配零次（舍弃a*）
+                    dp[i][j] = dp[i][j - 2]
+                    if matches(i: i, j: j - 1) {
+                        // 匹配多次（匹配当前字符不舍弃，还可以继续匹配）
+                        dp[i][j] = dp[i][j] || dp[i - 1][j]
+                    }
+                } else {
+                    if matches(i: i, j: j) {
+                        dp[i][j] = dp[i - 1][j - 1]
+                    }
+                }
+            }
+        }
+        return dp[m][n]
+    }
+    
+    // MARK: - 887. 鸡蛋掉落（困难）
+    func superEggDrop(_ k: Int, _ n: Int) -> Int {
+        if k == 1 { return n }
+        if n == 1 { return 1 }
+        var dp = Array(repeating: Array(repeating: 0, count: k + 1), count: n + 1)
+        for i in 1...k {
+            dp[1][i] = 1
+        }
+        var ans = -1
+        for i in 2...n {
+            for j in 1...k {
+                dp[i][j] = 1 + dp[i - 1][j] + dp[i - 1][j - 1]
+            }
+            if dp[i][k] >= n {
+                ans = i
+                break
+            }
+        }
+        return ans
+    }
 }
 

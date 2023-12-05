@@ -546,10 +546,43 @@ class LinkedList {
      输出：[]
      */
     static func mergeKLists(_ lists: [ListNode?]) -> ListNode? {
-        var res: ListNode?
-        for list in lists {
-            res = mergeTwoLists(res, list)
+        func mergeTwoLists(_ list1: ListNode?, _ list2: ListNode?) -> ListNode? {
+            let dummy: ListNode? = ListNode()
+            var pre = dummy
+            var l1 = list1
+            var l2 = list2
+            while l1 != nil, l2 != nil {
+                if l1!.val < l2!.val {
+                    pre?.next = l1
+                    l1 = l1?.next
+                    
+                } else {
+                    pre?.next = l2
+                    l2 = l2?.next
+                }
+                pre = pre?.next
+            }
+            if l1 != nil {
+                pre?.next = l1
+            }
+            if l2 != nil {
+                pre?.next = l2
+            }
+            return dummy?.next
         }
-        return res
+//        var res: ListNode?
+//        for list in lists {
+//            res = mergeTwoLists(res, list)
+//        }
+//        return res
+        
+        // 分治合并
+        func merge(left: Int, right: Int) -> ListNode? {
+            if left == right { return lists[left] }
+            if left > right { return nil }
+            let mid = (left + right) >> 1
+            return mergeTwoLists(merge(left: left, right: mid), merge(left: mid + 1, right: right))
+        }
+        return merge(left: 0, right: lists.count - 1)
     }
 }

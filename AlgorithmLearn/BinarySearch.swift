@@ -577,8 +577,40 @@ class BinarySearch {
      1 <= m + n <= 2000
      -106 <= nums1[i], nums2[i] <= 106
      */
-    static func findMedianSortedArrays(_ nums1: [Int], _ nums2: [Int]) -> Double {
-        return 0
+    func findMedianSortedArrays(_ nums1: [Int], _ nums2: [Int]) -> Double {
+        let len1 = nums1.count, len2 = nums2.count
+        // 从nums1的index1和nums2的index2开始，找第k小的数
+        func findKthNumber(index1: Int, index2: Int, k: Int) -> Int {
+            // nums1或nums2已经全部排除完，直接返回另一个数组第k小的元素
+            if index1 == len1 {
+                return nums2[index2 + k - 1]
+            }
+            if index2 == len2 {
+                return nums1[index1 + k - 1]
+            }
+            // 第一小的元素直接返回
+            if k == 1 {
+                return min(nums1[index1], nums2[index2])
+            }
+            // 找到两个数组下标为k/2-1的元素，注意边界。可知两个数组k/2-1左边的元素数量和为k-2
+            let mid1 = min(len1, index1 + k / 2) - 1, mid2 = min(len2, index2 + k / 2) - 1
+            // nums1[mid1]最大为第k-1小的元素
+            if nums1[mid1] <= nums2[mid2] {
+                // 计算排除数量
+                let excludeCount = mid1 - index1 + 1
+                return findKthNumber(index1: mid1 + 1, index2: index2, k: k - excludeCount)
+            } else {
+                let excludeCount = mid2 - index2 + 1
+                return findKthNumber(index1: index1, index2: mid2 + 1, k: k - excludeCount)
+            }
+        }
+        let mid1 = findKthNumber(index1: 0, index2: 0, k: (len1 + len2) / 2 + 1)
+        if (len1 + len2) % 2 == 1 {
+            return Double(mid1)
+        } else {
+            let mid2 = findKthNumber(index1: 0, index2: 0, k: (len1 + len2) / 2)
+            return Double(mid1 + mid2) / 2
+        }
     }
     
     // MARK: - 153. 寻找旋转排序数组中的最小值（中等）
