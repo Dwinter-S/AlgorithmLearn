@@ -518,22 +518,51 @@ class ALArray {
      输出：1
      */
     static func firstMissingPositive(_ nums: [Int]) -> Int {
+//        var nums = nums
+//        let count = nums.count
+//        for i in 0..<count {
+//            while nums[i] > 0, nums[i] < count, nums[i] != nums[nums[i] - 1] {
+//                (nums[nums[i] - 1], nums[i]) = (nums[i], nums[nums[i] - 1])
+//            }
+//        }
+//        var result = 1
+//        for i in 0..<count {
+//            if nums[i] != i + 1 {
+//                return i + 1
+//            } else {
+//                result += 1
+//            }
+//        }
+//        return result
+        
+        // 模拟哈希表
+        let n = nums.count
         var nums = nums
-        let count = nums.count
-        for i in 0..<count {
-            while nums[i] > 0, nums[i] < count, nums[i] != nums[nums[i] - 1] {
-                (nums[nums[i] - 1], nums[i]) = (nums[i], nums[nums[i] - 1])
+        // 将小于等于0的数都变为n+1
+        for i in 0..<n {
+            if nums[i] <= 0 {
+                nums[i] = n + 1
             }
         }
-        var result = 1
-        for i in 0..<count {
-            if nums[i] != i + 1 {
+        // 碰到1-n的数，将对应下标变为负数。
+        for i in 0..<n {
+            // 注意取绝对值，因为可能在前面变为了负数
+            let num = abs(nums[i])
+            if num <= n {
+                // 已经是负数不需要处理
+                if nums[num - 1] < 0 {
+                    continue
+                }
+                nums[num - 1] = -nums[num - 1]
+            }
+        }
+        // 找到第一个正数的下标返回
+        for i in 0..<n {
+            if (nums[i] > 0) {
                 return i + 1
-            } else {
-                result += 1
             }
         }
-        return result
+        return n + 1
     }
     
     // MARK: - 274. H 指数 (中等)

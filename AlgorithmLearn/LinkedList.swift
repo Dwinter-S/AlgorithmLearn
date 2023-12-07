@@ -257,6 +257,16 @@ class LinkedList {
         newHead?.next = head
         head?.next = swapPairs(thirdNode)
         return newHead
+        
+        let dummy = ListNode(0, head)
+        var cur: ListNode? = dummy
+        while let first = cur?.next, let second = first.next {
+            cur?.next = second
+            first.next = second.next
+            second.next = first
+            cur = first
+        }
+        return dummy.next
     }
     
     // MARK: - 206. 反转链表
